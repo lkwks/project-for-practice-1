@@ -1,0 +1,31 @@
+.app-frame {
+    height: 800px;
+    width: 400px;
+    border-radius: 15px;
+    background-color: #66f;
+}
+
+.status-bar {
+}
+
+.status-bar div {
+    height: 30px;
+    display: inline-block;
+}
+
+#backButton {
+    width: 70px;
+}
+
+#clock {
+    color: white;
+}
+
+#newButton {
+    width: 70px;
+    float: right;
+}
+
+.page-content div {
+    border:1px solid black;
+}
