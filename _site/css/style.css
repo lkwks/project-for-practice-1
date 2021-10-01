@@ -5,12 +5,18 @@
     background-color: #66f;
 }
 
-.status-bar {
-}
-
-.status-bar div {
+#status-bar div {
     height: 30px;
     display: inline-block;
+}
+
+.status-bar-button {
+    border: 1px solid #aaf;
+    border-radius: 5px;
+    color: #aaf;
+    width: 40px;
+    height: 20px;
+    background-color: #fff;
 }
 
 #backButton {
@@ -26,6 +32,12 @@
     float: right;
 }
 
-.page-content div {
+#page-content{
+    padding: 30px;
+}
+
+#home-content {
     border:1px solid black;
+    height: auto;
+    width: auto;
 }

@@ -1,0 +1,11 @@
+<script>
+async function funcn() {
+    
+    const pages_response = await fetch("pages.json");
+    pages_json = await pages_response.json();
+    
+    Object.keys(pages_json).forEach(elem=>alert(elem));
+}
+
+funcn();
+</script>

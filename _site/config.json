@@ -1,4 +1,15 @@
 {
-  "title": "Awesome SPA",
-  "date-format": "Y년 M월 D일 h시 m분 s초"
+    "title": "Awesome SPA",
+    "date-format": "YYYY년 MM월 DD일 hh시 mm분 ss초",
+    "text-info": 
+    { 
+        "BackButton": "BACK",
+        "NewButton": "NEW",
+        "AM": "오전",
+        "PM": "오후",
+        "Hour": "시",
+        "Minute": "분",
+        "SaveButton": "저장",
+        "MemoPlaceholder": "메모를 입력하세요."
+    }
 }
