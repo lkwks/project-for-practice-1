@@ -1,4 +1,5 @@
-let homeContentNode = document.createElement("div");
+let ConfigTextInfo;
+const homeContentNode = document.createElement("div");
 const backButtonNode = document.createElement("button");
 
 function drawClock(date_format)
@@ -12,9 +13,9 @@ function drawClock(date_format)
     setTimeout(_=>drawClock(date_format), 1000);   
 }
 
-function createBackButton(button_text)
+function createBackButton()
 {
-    backButtonNode.textContent = button_text;
+    backButtonNode.textContent = ConfigTextInfo["BackButton"];
     backButtonNode.classList.add("status-bar-button");
     backButtonNode.addEventListener("click", drawHomeContent);
 }
@@ -27,7 +28,7 @@ function drawHomeContent()
 }
 
 
-async function makeHomeContent()
+async function makeHomeContent(text_info)
 {
     const pages_response = await fetch("pages.json");
     const pages_json = await pages_response.json();    
@@ -62,9 +63,10 @@ async function startApplication()
 {
     const config_response = await fetch("config.json");
     const app_config = await config_response.json();
+    ConfigTextInfo = app_config["text-info"];
     document.title = app_config["title"];
     drawClock(app_config["date-format"]);
-    createBackButton(app_config["text-info"]["BackButton"]);
+    createBackButton();
     await makeHomeContent();
     drawHomeContent();
 }
@@ -74,13 +76,19 @@ async function startApplication()
 
 function drawAlarmContent()
 {
+    const layout_response = await fetch("layout/alarm.html");
+    document.getElementById("page-content").innerHTML = await layout_response.text(); 
+
     if (document.getElementById("backButton").innerHTML === "")
         document.getElementById("backButton").appendChild(backButtonNode);
-    document.getElementById("newButton").innerHTML = "";
-
-    const newButtonNode = document.createElement("button");    
     
-    document.getElementById("page-content").innerHTML = ; 
+    const newButtonNode = document.createElement("button");    
+    newButtonNode.textContent = ConfigTextInfo["newButton"];
+    newButtonNode.classList.add("status-bar-button");
+    newButtonNode.addEventListener("click", _=>{document.getElementById("create-new-alarm").style.display='block';});
+    document.getElementById("newButton").appendChild(newButtonNode);
+
+    
 }
 
 

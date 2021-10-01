@@ -7,9 +7,8 @@
         "NewButton": "NEW",
         "AM": "오전",
         "PM": "오후",
-        "Hour": "시",
-        "Minute": "분",
+        "time-format": "hh시 mm분"
         "SaveButton": "저장",
-        "MemoPlaceholder": "메모를 입력하세요."
+        "MemoPlaceholder": "메모를 입력하세요"
     }
 }
