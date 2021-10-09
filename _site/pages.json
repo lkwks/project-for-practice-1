@@ -1,5 +1,5 @@
 {
-    "alarm": ["알람", "alarm.html"],
-    "memo": ["메모", "memo.html"],
-	"album": ["사진", "album.html"]
+    "alarm": "알람",
+    "memo": "메모",
+	"album": "사진"
 }

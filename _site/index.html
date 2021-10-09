@@ -1,26 +1,47 @@
 <html>
-
     <head>
         <title></title>
-    
         <link rel="stylesheet" href="css/style.css">
-        <script src="awesomespa.js"></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", async _=> await startApplication());
-        </script>
+        <script type="module" src="src/awesomespa.js"></script>
     </head>
-    
     <body>
-        <div class="app-frame">
-            <div id="status-bar">
-                <div id="backButton"></div>
-                <div id="clock"></div>
-                <div id="newButton"></div>
-            </div>
-            <div id="page-content">
-                <!--startApplication()이 실행되면 page-content가 채워진다.-->
-            </div>
-        </div>
+        <article class="app-frame">
+            <header>
+                <div class="status-bar">
+                    <nav id="backButton"><button class="button"></button></nav>
+                    <span id="clock"></span>
+                    <div id="newButton"><button class="button"></button></div>
+                </div>
+            </header>
+            <main>
+                <div id="page-content">
+                    <div id="home-content"></div>
+                    
+                    <div id="alarm-content" style="display:none;">
+                        <div id="new-alarm">
+                            <select id="new-ampm">
+                                <option value=0 selected>오전</option>
+                                <option value=1>오후</option>
+                            </select>
+                            <input id="new-hour" type=number step=1 min=1 max=12 value=12> 시
+                            <input id="new-minute" type=number step=10 min=0 max=50 value=0> 분
+                            <button id="saveButton" class="button"></button>
+                        </div>
+                        <div id="alarm-list"></div>
+                    </div>
+                    
+                    <div id="memo-content" style="display:none;">
+                        <input type=text>
+                        <div id="memo-list"></div>
+                    </div>
+                    
+                    <div id="album-content" style="display:none;">
+                        <ul class="album-flist"></ul>
+                        <div class="album-view-frame"></div>
+                    </div>
+                </div>
+            </main>
+        </article>
     </body>
 </html>
     

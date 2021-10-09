@@ -1,3 +1,10 @@
+
+ul {
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+}
+
 .app-frame {
     height: 800px;
     width: 400px;
@@ -5,18 +12,24 @@
     background-color: #66f;
 }
 
-#status-bar div {
-    height: 30px;
-    display: inline-block;
-}
-
-.status-bar-button {
-    border: 1px solid #aaf;
+.button {
+    border: 1px solid #00f;
     border-radius: 5px;
     color: #aaf;
-    width: 40px;
-    height: 20px;
+    width: 50px;
+    height: 25px;
     background-color: #fff;
+}
+
+.status-bar {
+    display: flex;
+    justify-content: center;
+    height: 30px;
+}
+
+.status-bar nav, .status-bar div, .status-bar span{
+    display: flex;
+    justify-content: center;
 }
 
 #backButton {
@@ -28,16 +41,104 @@
 }
 
 #newButton {
-    width: 70px;
     float: right;
+    width: 70px;
 }
 
 #page-content{
+}
+
+#home-content{
+    justify-content: center;
     padding: 30px;
 }
 
-#home-content {
-    border:1px solid black;
+
+.app-button-box{
+    width: 100px;
+    height: 100px; 
+}
+
+.app-button {
+    border: 1px solid #00f;
+    border-radius: 15px;
+    color: #aaf;
+    width: 80%;
+    height: 80%;
+    background-color: #fff;    
+}
+
+
+#album-content {
+    height: calc(100% - 30px);
+}
+
+.album-flist {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 110px;
+}
+
+.album-img-frame {
+    border: 1px solid #66f;
+    border-radius: 15px;
+    height: 60px;
+    min-width: 60px;
+    margin: 20px;
+    background-size: cover;
+}
+
+.album-clicked {
+    border: 1px solid red;
+}
+
+.album-view-frame {
+    border-radius: 0 0 15px 15px;
+    height: calc(100% - 110px);
+    background-color: black;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+input {
+    width: 100%;
+}
+
+
+.memo-element {
     height: auto;
-    width: auto;
+    max-height: 2.6em;
+    overflow: hidden;
+    background-color: white;
+    margin-top: 5px;
+    word-break: break-all;
+}
+
+#new-alarm {
+    background-color: white;
+    padding: 5px;
+}
+
+#new-alarm select, #new-alarm input {
+    width: 50px;
+}
+#new-alarm button {
+    float: right;
+    height: 22px;
+    width: 45px;
+}
+#alarm-list button {
+    float: right;
+    border: 1px solid red;
+    height: 22px;
+    width: 45px;
+    color: red;
+}
+
+#alarm-list li {
+    padding: 5px;
+    padding-left: 30px;
+    margin-top: 5px;
+    background-color: white;
 }
