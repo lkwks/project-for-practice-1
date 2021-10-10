@@ -73,7 +73,6 @@ export default function makeInitialStatus(config)
             .then(pages => 
             {
                 homeButtons = pages;
-                localStorage.setItem("homeButtons", JSON.stringify(pages));
                 makeHomeContent();
             });
     else
