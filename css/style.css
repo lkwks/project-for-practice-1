@@ -68,7 +68,7 @@ ul {
 }
 
 [draggable="true"] {
-    cursor: initial
+    cursor: none
 }
 
 
