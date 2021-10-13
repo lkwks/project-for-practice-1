@@ -67,6 +67,11 @@ ul {
     background-color: #fff;    
 }
 
+[draggable="true"] {
+    cursor: initial
+}
+
+
 /* album content */
 
 #album-content {
