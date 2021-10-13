@@ -65,10 +65,7 @@ ul {
     width: 80%;
     height: 80%;
     background-color: #fff;    
-}
-
-[draggable="true"] {
-    cursor: none
+    cursor: initial
 }
 
 
