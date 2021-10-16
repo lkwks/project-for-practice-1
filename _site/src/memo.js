@@ -1,51 +1,77 @@
-import {backButton, newButton, text_info, turnOffAll} from "./home.js";
-
-let now_clicked = null, memos = null;
-
-export function makeMemoInput()
+export default class Memo
 {
-    document.getElementById("new-memo").setAttribute("placeholder", text_info["MemoPlaceholder"]);
-    document.getElementById("new-memo").addEventListener("keyup", event=> addNewMemo(event.key));
-}
-
-export function addNewMemo(key)
-{
-    if (key == "Enter")
+    constructor(AppSet, memoContent)
     {
-        const new_memos = memos === null? new Array() : memos;
-        new_memos.unshift(document.getElementById("new-memo").value);
-        document.getElementById("new-memo").value = '';
-        localStorage.setItem("memos", JSON.stringify(new_memos));
-        makeMemoContent();
-        drawMemoContent();
+        this.AppSet = AppSet;
+        this.target = memoContent;
+        this.now_clicked = null;
+        this.newMemo = new NewMemo(this);
+        this.renew();
+    }
+    
+    renew()
+    {
+        this.target.querySelector("ul").innerHTML = '';    
+        this.memos = JSON.parse(localStorage.getItem("memos"));
+        if (this.memos !== null)
+            this.memos.forEach(elem =>
+            {
+                const memo_elem = document.createElement("li");
+                this.target.querySelector("ul").appendChild(memo_elem);
+                memo_elem.textContent = elem;
+                memo_elem.classList.add("memo-element");
+                memo_elem.addEventListener("click", event => 
+                {
+                    if (this.now_clicked !== null)
+                        this.now_clicked.style.maxHeight = '2.6em';
+                    event.target.style.maxHeight = 'none';
+                    this.now_clicked = event.target;
+                });
+            });
+    }
+    
+    show()
+    {
+        this.AppSet.turnOffAll();
+        this.target.style.display = 'block';
+        this.AppSet.backButton.show();
+        this.AppSet.newButton.show();
+    }
+    
+    hide()
+    {
+        this.target.style.display = 'none';
     }
 }
 
-export default function drawMemoContent()
-{
-    turnOffAll();
-    document.getElementById("memo-content").style.display = 'block';
-    backButton.style.display = 'block';
-    newButton.style.display = 'block';    
-}
 
-export function makeMemoContent()
+class NewMemo 
 {
-    document.getElementById("memo-list").innerHTML = '';    
-    memos = JSON.parse(localStorage.getItem("memos"));
-    if (memos !== null)
-        memos.forEach(elem =>
+    constructor(Memo)
+    {
+        this.target = Memo.target.querySelector("input");
+        this.target.setAttribute("placeholder", Memo.AppSet.textInfo["MemoPlaceholder"]);
+        this.target.addEventListener("keyup", event => 
         {
-            const memo_elem = document.createElement("li");
-            document.getElementById("memo-list").appendChild(memo_elem);
-            memo_elem.textContent = elem;
-            memo_elem.classList.add("memo-element");
-            memo_elem.addEventListener("click", _=> 
+            if (event.key == "Enter")
             {
-                if (now_clicked !== null)
-                    now_clicked.style.maxHeight = '2.6em';
-                memo_elem.style.maxHeight = 'none';
-                now_clicked = memo_elem;
-            });
+                const new_memos = Memo.memos === null? new Array() : Memo.memos;
+                new_memos.unshift(this.target.value);
+                this.target.value = '';
+                localStorage.setItem("memos", JSON.stringify(new_memos));
+                Memo.renew();
+                Memo.show();
+            }
         });
+    }
+    
+    show()
+    {
+        this.target.style.display = 'inline';
+    }
+    
+    hide()
+    {
+        this.target.style.display = 'none';
+    }
 }
