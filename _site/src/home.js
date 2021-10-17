@@ -1,4 +1,4 @@
-export function clock(AppSet)
+export function clock(AlarmContent)
 {
     const time = new Date();
     const year = time.getFullYear(), month = time.getMonth() + 1, day = time.getDate();
@@ -17,20 +17,20 @@ export function clock(AppSet)
         if (new_alarms.length !== alarms.length)
         {
             localStorage.setItem("alarms", JSON.stringify(new_alarms));
-            AppSet.alarmContent.renew();
-            if (AppSet.alarmContent.target.style.display === 'block')
-                AppSet.alarmContent.show();
+            AlarmContent().renew();
+            if (AlarmContent().target.style.display === 'block')
+                AlarmContent().show();
         }
     }
-    setTimeout(_=>clock(AppSet), 1000);
+    setTimeout(_=>clock(AlarmContent), 1000);
 }
 
 export default class Home
 {
-    constructor(AppSet, homeButtons, homeContent) 
+    constructor(AppObj, homeButtons) 
     {
-        this.AppSet = AppSet;
-        this.homeContent = homeContent;
+        this.AppObj = AppObj;
+        this.homeContent = this.AppObj.homeContentNode;
         this.homeButtons = homeButtons;
         
         Object.keys(homeButtons).forEach((elem, idx) => 
@@ -51,17 +51,17 @@ export default class Home
             app_button.addEventListener("dragend", event=>event.target.style.opacity=1);
                     
             if (elem === "alarm")
-                app_button.addEventListener("click", _=> AppSet.alarmContent.show()); 
+                app_button.addEventListener("click", _=> AppObj.alarmContent().show()); 
             if (elem === "memo")
-                app_button.addEventListener("click", _=> AppSet.memoContent.show()); 
+                app_button.addEventListener("click", _=> AppObj.memoContent().show()); 
             if (elem === "album")
-                app_button.addEventListener("click", _=> AppSet.albumContent.show());  
+                app_button.addEventListener("click", _=> AppObj.albumContent().show());  
         });
     }
     
     show()
     {
-        this.AppSet.turnOffAll();
+        this.AppObj.turnOffAll();
         this.homeContent.style.display = 'flex';
     }
     

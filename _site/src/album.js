@@ -1,9 +1,9 @@
 export default class Album
 {
-    constructor(AppSet, albumContent)
+    constructor(AppObj)
     {
-        this.AppSet = AppSet;
-        this.target = albumContent;
+        this.AppObj = AppObj;
+        this.target = AppObj.albumContentNode;
         this.now_clicked=null;
         fetch("./album/file_list.json")
             .then(response => response.json())
@@ -31,9 +31,9 @@ export default class Album
 
     show()
     {
-        this.AppSet.turnOffAll();
+        this.AppObj.turnOffAll();
         this.target.style.display = 'block';
-        this.AppSet.backButton.show();
+        this.AppObj.backButton().show();
     }
     
     hide()

@@ -5,53 +5,62 @@ import Album from "./album.js";
 import {clock} from "./home.js";
 
 class BackButton {
-    constructor(backButton, text_info, homeContent)
+    constructor(AppObj)
     {
-        this.target = backButton;
-        backButton.textContent = text_info;
-        backButton.addEventListener("click", _=> homeContent.show());
+        this.AppObj = AppObj;
+        this.AppObj.backButtonNode.textContent = this.AppObj.textInfo["BackButton"];
+        this.AppObj.backButtonNode.addEventListener("click", _=> this.AppObj.homeContent().show());
     }
     
     show()
     {
-        this.target.style.display = 'block';
+        this.AppObj.backButtonNode.style.display = 'block';
     }
     
     hide()
     {
-        this.target.style.display = 'none';
+        this.AppObj.backButtonNode.style.display = 'none';
     }
 }
 
 class NewButton {
-    constructor(newButton, text_info, newAlarm, newMemo)
+    constructor(AppObj)
     {
-        this.target = newButton;
-        newButton.textContent = text_info;
-        newButton.addEventListener("click", _=> { newAlarm.show(); newMemo.show(); });
+        this.AppObj = AppObj;
+        this.AppObj.newButtonNode.textContent = this.AppObj.textInfo["NewButton"];
+        this.AppObj.newButtonNode.addEventListener("click", _=> { this.AppObj.alarmContent().newAlarm.show(); this.AppObj.memoContent().newMemo.show(); });
     }
 
     show()
     {
-        this.target.style.display = 'block';
+        this.AppObj.newButtonNode.style.display = 'block';
     }
     
     hide()
     {
-        this.target.style.display = 'none';
+        this.AppObj.newButtonNode.style.display = 'none';
     }
 }
 
 
 class App {
-    constructor(config)
+    constructor(config, target)
     {
         document.title = config["title"];
-        this.textInfo = config["text-info"];
-
-        this.alarmContent = new Alarm(this, document.getElementById("alarm-content"));
-        this.memoContent = new Memo(this, document.getElementById("memo-content"));
-        this.albumContent = new Album(this, document.getElementById("album-content"));
+        clock(_=>this.alarmContent);
+        
+        const thisObj = 
+        {
+            textInfo: config["text-info"], 
+            backButton: _=>this.backButton, newButton: _=>this.newButton, turnOffAll: _=>this.turnOffAll(), 
+            alarmContent: _=>this.alarmContent, memoContent: _=>this.memoContent, albumContent: _=>this.albumContent, homeContent: _=>this.homeContent,
+            alarmContentNode: target.querySelector("#alarm-content"), memoContentNode: target.querySelector("#memo-content"), albumContentNode: target.querySelector("#album-content"), homeContentNode: target.querySelector("#home-content"),
+            backButtonNode: target.querySelector("#backButton button"), newButtonNode: target.querySelector("#newButton button")
+        };
+        
+        this.alarmContent = new Alarm(thisObj);
+        this.memoContent = new Memo(thisObj);
+        this.albumContent = new Album(thisObj);
 
         this.homeButtons = JSON.parse(localStorage.getItem("homeButtons"));
     
@@ -61,17 +70,16 @@ class App {
                 .then(pages => 
                 {
                     localStorage.setItem("homeButtons", JSON.stringify(pages));
-                    this.homeContent = new Home(this, pages, document.getElementById("home-content"));
+                    this.homeContent = new Home(thisObj, pages);
                 });
         else
-            this.homeContent = new Home(this, this.homeButtons, document.getElementById("home-content"));
+            this.homeContent = new Home(thisObj, this.homeButtons);
 
-        this.backButton = new BackButton(document.getElementById("backButton").firstChild, this.textInfo["BackButton"], this.homeContent);
-        this.newButton = new NewButton(document.getElementById("newButton").firstChild, this.textInfo["NewButton"], this.alarmContent.newAlarm, this.memoContent.newMemo);
+        this.backButton = new BackButton(thisObj);
+        this.newButton = new NewButton(thisObj);
 
         this.turnOffSet = [this.homeContent, this.backButton, this.newButton, this.alarmContent, this.alarmContent.newAlarm, this.memoContent, this.memoContent.newMemo, this.albumContent];
         this.homeContent.show();
-        clock(this);
     }
     
     turnOffAll()
@@ -83,4 +91,4 @@ class App {
 
 fetch("config.json")
     .then(response => response.json())
-    .then(config => new App(config));
+    .then(config => new App(config, document.querySelector(".app-frame")));

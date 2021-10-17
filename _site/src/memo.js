@@ -1,11 +1,11 @@
 export default class Memo
 {
-    constructor(AppSet, memoContent)
+    constructor(AppObj)
     {
-        this.AppSet = AppSet;
-        this.target = memoContent;
+        this.AppObj = AppObj;
+        this.target = AppObj.memoContentNode;
         this.now_clicked = null;
-        this.newMemo = new NewMemo(this);
+        this.newMemo = new NewMemo({newMemoNode: this.target.querySelector("input"), textInfo: AppObj.textInfo, memos: _=>this.memos, renew:_=>this.renew(), show:_=>this.show()});
         this.renew();
     }
     
@@ -32,10 +32,10 @@ export default class Memo
     
     show()
     {
-        this.AppSet.turnOffAll();
+        this.AppObj.turnOffAll();
         this.target.style.display = 'block';
-        this.AppSet.backButton.show();
-        this.AppSet.newButton.show();
+        this.AppObj.backButton().show();
+        this.AppObj.newButton().show();
     }
     
     hide()
@@ -49,13 +49,13 @@ class NewMemo
 {
     constructor(Memo)
     {
-        this.target = Memo.target.querySelector("input");
-        this.target.setAttribute("placeholder", Memo.AppSet.textInfo["MemoPlaceholder"]);
+        this.target = Memo.newMemoNode;
+        this.target.setAttribute("placeholder", Memo.textInfo["MemoPlaceholder"]);
         this.target.addEventListener("keyup", event => 
         {
             if (event.key == "Enter")
             {
-                const new_memos = Memo.memos === null? new Array() : Memo.memos;
+                const new_memos = Memo.memos() === null? new Array() : Memo.memos();
                 new_memos.unshift(this.target.value);
                 this.target.value = '';
                 localStorage.setItem("memos", JSON.stringify(new_memos));

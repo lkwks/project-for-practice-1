@@ -1,19 +1,19 @@
 export default class Alarm
 {
-    constructor(AppSet, alarmContent)
+    constructor(AppObj)
     {
-        this.AppSet = AppSet;
-        this.target = alarmContent;
-        this.newAlarm = new NewAlarm(this);
+        this.AppObj = AppObj;
+        this.target = AppObj.alarmContentNode;
+        this.newAlarm = new NewAlarm({textInfo:AppObj.textInfo, newAlarmNode: this.target.querySelector("#new-alarm"), addNewAlarm: _=>this.addNewAlarm()});
         this.renew();
     }
     
     show()
     {
-        this.AppSet.turnOffAll();
+        this.AppObj.turnOffAll();
         this.target.style.display = 'block';
-        this.AppSet.backButton.show();
-        this.AppSet.newButton.show();
+        this.AppObj.backButton().show();
+        this.AppObj.newButton().show();
     }
     
     hide()
@@ -54,7 +54,7 @@ export default class Alarm
     
                 const delete_button = document.createElement("button");
                 alarm_elem.appendChild(delete_button);
-                delete_button.textContent = this.AppSet.textInfo["DeleteButton"];
+                delete_button.textContent = this.AppObj.textInfo["DeleteButton"];
                 delete_button.classList.add("button");
                 delete_button.addEventListener("click", _=>
                 {
@@ -71,8 +71,8 @@ class NewAlarm
 {
     constructor(Alarm)
     {
-        this.target = Alarm.target.querySelector("#new-alarm");
-        this.target.querySelector("button").textContent = Alarm.AppSet.textInfo["SaveButton"];
+        this.target = Alarm.newAlarmNode;
+        this.target.querySelector("button").textContent = Alarm.textInfo["SaveButton"];
         this.target.querySelector("button").addEventListener("click", _=> Alarm.addNewAlarm());
     }
     
