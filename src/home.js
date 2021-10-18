@@ -39,7 +39,6 @@ export default class Home
             this.homeContent.appendChild(button_box);
             button_box.classList.add("app-button-box");
             button_box.setAttribute("id", "box"+idx);
-            button_box.addEventListener("dragover", _=>this.dragActions(idx));
                     
             const app_button = document.createElement("button");
             button_box.appendChild(app_button);
@@ -47,16 +46,38 @@ export default class Home
             app_button.setAttribute("draggable", "true");
             app_button.classList.add("app-button");
             app_button.textContent = this.homeButtons[elem];
-            app_button.addEventListener("dragstart", event=>{this.now_dragging = elem; event.target.style.opacity=0.01;});
-            app_button.addEventListener("dragend", event=>event.target.style.opacity=1);
-                    
-            if (elem === "alarm")
-                app_button.addEventListener("click", _=> AppObj.alarmContent().show()); 
-            if (elem === "memo")
-                app_button.addEventListener("click", _=> AppObj.memoContent().show()); 
-            if (elem === "album")
-                app_button.addEventListener("click", _=> AppObj.albumContent().show());  
         });
+
+        this.homeContent.addEventListener("dragover", e=>
+        {
+            if (e.target.className === "app-button-box")
+                this.dragActions(e.target.id)
+        });
+
+        this.homeContent.addEventListener("dragstart", event=>
+        {
+            if (event.target.nodeName == "BUTTON")
+            {
+                this.now_dragging = event.target.id.replace("button_", ""); event.target.style.opacity=0.01;
+            }
+        });
+        
+        this.homeContent.addEventListener("dragend", event=>
+        {
+            if (event.target.nodeName == "BUTTON")
+                event.target.style.opacity=1;
+        });
+        
+        this.homeContent.addEventListener("click", event=>
+        {
+            if (event.target.id === "button_alarm")
+                this.AppObj.alarmContent().show(); 
+            if (event.target.id === "button_memo")
+                this.AppObj.memoContent().show(); 
+            if (event.target.id === "button_album")
+                this.AppObj.albumContent().show();  
+        });
+
     }
     
     show()
@@ -75,7 +96,7 @@ export default class Home
         const new_button_list = new Object();
         const now_order = Object.keys(this.homeButtons);
         for (let i=0, j=0; i<now_order.length; i++)
-            if (i === now_box)
+            if ("box"+i === now_box)
                 new_button_list[this.now_dragging] = this.homeButtons[this.now_dragging];
             else
             {

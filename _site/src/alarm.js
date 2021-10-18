@@ -6,6 +6,19 @@ export default class Alarm
         this.target = AppObj.alarmContentNode;
         this.newAlarm = new NewAlarm({textInfo:AppObj.textInfo, newAlarmNode: this.target.querySelector("#new-alarm"), addNewAlarm: _=>this.addNewAlarm()});
         this.renew();
+        this.target.querySelector("ul").addEventListener("click", e=>
+        {
+            this.target.querySelectorAll("li").forEach((elem, idx) =>
+            {
+                if (e.target.parentNode === elem)
+                {
+                    this.alarms.splice(idx, 1);
+                    localStorage.setItem("alarms", JSON.stringify(this.alarms));
+                    this.renew();
+                    this.show();
+                }
+            });
+        });
     }
     
     show()
@@ -56,13 +69,6 @@ export default class Alarm
                 alarm_elem.appendChild(delete_button);
                 delete_button.textContent = this.AppObj.textInfo["DeleteButton"];
                 delete_button.classList.add("button");
-                delete_button.addEventListener("click", _=>
-                {
-                    arr.splice(idx, 1);
-                    localStorage.setItem("alarms", JSON.stringify(arr));
-                    this.renew();
-                    this.show();
-                });
             });
     }
 }

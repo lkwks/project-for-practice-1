@@ -6,6 +6,18 @@ export default class Memo
         this.target = AppObj.memoContentNode;
         this.now_clicked = null;
         this.newMemo = new NewMemo({newMemoNode: this.target.querySelector("input"), textInfo: AppObj.textInfo, memos: _=>this.memos, renew:_=>this.renew(), show:_=>this.show()});
+        
+        this.target.querySelector("ul").addEventListener("click", event => 
+        {
+            if (event.target.nodeName === "LI")
+            {
+                if (this.now_clicked !== null)
+                    this.now_clicked.style.maxHeight = '2.6em';
+                event.target.style.maxHeight = 'none';
+                this.now_clicked = event.target;
+            }
+        });
+
         this.renew();
     }
     
@@ -20,13 +32,6 @@ export default class Memo
                 this.target.querySelector("ul").appendChild(memo_elem);
                 memo_elem.textContent = elem;
                 memo_elem.classList.add("memo-element");
-                memo_elem.addEventListener("click", event => 
-                {
-                    if (this.now_clicked !== null)
-                        this.now_clicked.style.maxHeight = '2.6em';
-                    event.target.style.maxHeight = 'none';
-                    this.now_clicked = event.target;
-                });
             });
     }
     

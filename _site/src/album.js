@@ -15,16 +15,19 @@ export default class Album
                     this.target.querySelector("ul").appendChild(img_frame);
                     img_frame.classList.add("album-img-frame");
                     img_frame.style.backgroundImage = `url(./album/${elem})`;
+                });
                 
-                    img_frame.addEventListener("click", event=>
+                this.target.addEventListener("click", event=>
+                {
+                    if (event.target.nodeName === "LI")
                     {
                         if (this.now_clicked !== null)
                             this.now_clicked.classList.remove("album-clicked");
                         event.target.classList.add("album-clicked");
-                        document.getElementById("album-view-frame").style.backgroundImage = `url(./album/${elem})`;
-                        document.getElementById("album-view-frame").style.backgroundPosition = `center center`;
+                        this.target.querySelector("#album-view-frame").style.backgroundImage = event.target.style.backgroundImage;
+                        this.target.querySelector("#album-view-frame").style.backgroundPosition = `center center`;
                         this.now_clicked = event.target;
-                    });
+                    }
                 });
             }); 
     }
