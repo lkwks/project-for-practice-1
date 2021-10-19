@@ -8,7 +8,7 @@ export default class Memo
         this.now_clicked = null;
         this.newMemo = new NewMemo({newMemoNode: this.target.querySelector("input"), textInfo: AppObj.textInfo, memos: _=>this.memos, render:_=>this.render()});
         
-        this.target.querySelector("ul").addEventListener("click", event => 
+        this.memoList.addEventListener("click", event => 
         {
             if (event.target.nodeName === "LI")
             {
