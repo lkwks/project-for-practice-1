@@ -55,20 +55,7 @@ class App {
         this.alarmContent = new Alarm(thisObj);
         this.memoContent = new Memo(thisObj);
         this.albumContent = new Album(thisObj);
-
-        const homeButtons = JSON.parse(localStorage.getItem("homeButtons"));
-    
-        if (homeButtons === null)
-            fetch("pages.json")
-                .then(response => response.json())
-                .then(pages => 
-                {
-                    localStorage.setItem("homeButtons", JSON.stringify(pages));
-                    this.homeContent = new Home(thisObj, pages);
-                });
-        else
-            this.homeContent = new Home(thisObj, homeButtons);
-
+        this.homeContent = new Home(thisObj);
         this.backButton = new BackButton(thisObj);
         this.newButton = new NewButton(thisObj);
         this.nowContent = this.homeContent;
