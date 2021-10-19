@@ -12,13 +12,18 @@ export default class Alarm
             {
                 if (e.target.parentNode === elem)
                 {
-                    this.alarms.splice(idx, 1);
-                    localStorage.setItem("alarms", JSON.stringify(this.alarms));
+                    this.deleteListItem(idx);
                     this.render();
                 }
             });
         });
         this.render();
+    }
+    
+    deleteListItem(idx)
+    {
+        this.alarms.splice(idx, 1);
+        localStorage.setItem("alarms", JSON.stringify(this.alarms));
     }
     
     toggle()
