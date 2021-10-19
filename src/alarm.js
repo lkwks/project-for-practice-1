@@ -28,13 +28,12 @@ export default class Alarm
     
     render()
     {
-        this.alarmList.innerHTML = '';
         this.alarms = JSON.parse(localStorage.getItem("alarms"));
         if (this.alarms !== null)
-            this.alarms.forEach((elem, idx, arr) =>
+        {
+            this.alarmList.innerHTML = this.alarms.map(elem =>
             {
                 const alarm_elem = document.createElement("li");
-                this.target.querySelector("ul").appendChild(alarm_elem);
                 alarm_elem.classList.add("alarm-element");
                 const ampm = elem < 720 ? "오전" : "오후";
                 let hour = Math.floor(elem/60);
@@ -46,7 +45,10 @@ export default class Alarm
                 alarm_elem.appendChild(delete_button);
                 delete_button.textContent = this.AppObj.textInfo["DeleteButton"];
                 delete_button.classList.add("button");
+                
+                return alarm_elem;
             });
+        }
     }
 }
 
