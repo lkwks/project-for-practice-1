@@ -31,7 +31,7 @@ export default class Memo
         const listItem = document.createElement("li");
         listItem.textContent = elem;
         listItem.classList.add("memo-element");
-        return listItem;
+        return listItem.outerHTML;
     }
     
     render()
