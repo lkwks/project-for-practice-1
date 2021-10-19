@@ -2,7 +2,27 @@ import Home from "./home.js";
 import Alarm from "./alarm.js";
 import Memo from "./memo.js";
 import Album from "./album.js";
-import {clock} from "./home.js";
+
+function clock(AlarmContent)
+{
+    const time = new Date();
+    const year = time.getFullYear(), month = time.getMonth() + 1, day = time.getDate();
+    const hour = time.getHours(), minute = time.getMinutes(), second = time.getSeconds();
+    document.getElementById('clock').textContent = `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분 ${second}초`;
+    
+    const alarms = JSON.parse(localStorage.getItem("alarms"));
+    if (alarms !== null)
+        alarms.forEach((elem, idx) =>
+        {
+            if (hour*60+minute === elem)
+            {
+                alert(`${hour}시 ${minute}분`);
+                AlarmContent().deleteListItem(idx);
+            }
+        });
+    setTimeout(_=>clock(AlarmContent), 1000);
+}
+
 
 class BackButton {
     constructor(AppObj)
