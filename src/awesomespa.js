@@ -88,6 +88,7 @@ class App {
         
         if (newContent === this.homeContent)
         {
+            console.log(this.alarmContent);
             if (this.usingNewButton)
                 this.newButton.toggle();
             if (this.alarmContent.newAlarm.target.classList.contains("hide") === false)
