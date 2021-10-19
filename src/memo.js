@@ -2,7 +2,6 @@ export default class Memo
 {
     constructor(AppObj)
     {
-        this.AppObj = AppObj;
         this.target = AppObj.memoContentNode;
         this.memoList = this.target.querySelector("ul");
         this.now_clicked = null;
