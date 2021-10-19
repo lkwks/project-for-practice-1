@@ -101,7 +101,6 @@ class ButtonBox
     
     setState(appButtonNode)
     {
-        appButtonNode.parentNode.removeChild(appButtonNode);
         this.node.appendChild(appButtonNode);
     }
 }
