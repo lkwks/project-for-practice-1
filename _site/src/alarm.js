@@ -14,7 +14,7 @@ export default class Alarm
                     this.deleteListItem(idx);
             });
         });
-        this.render();
+        this.setState(false);
     }
     
     deleteListItem(idx)
@@ -23,10 +23,11 @@ export default class Alarm
         localStorage.setItem("alarms", JSON.stringify(this.alarms));
         this.render();
     }
-    
-    toggle()
+
+    setState(isVisible)
     {
-        this.target.classList.toggle("hide");
+        this.isVisible = isVisible;
+        this.render();
     }
     
     makeListItem(elem)
@@ -49,14 +50,24 @@ export default class Alarm
     
     render()
     {
-        this.alarms = JSON.parse(localStorage.getItem("alarms"));
-        if (this.alarms !== null)
-            this.alarmList.innerHTML = this.alarms.map(elem => this.makeListItem(elem)).join("");
+        if (this.isVisible)
+        {
+            this.alarms = JSON.parse(localStorage.getItem("alarms"));
+            if (this.alarms !== null)
+                this.alarmList.innerHTML = this.alarms.map(elem => this.makeListItem(elem)).join("");
+            this.target.classList.remove("hide");
+        }
+        else
+            this.target.classList.add("hide");            
     }
 }
 
 class NewAlarm
 {
+    ampm = 0;
+    minute = 0;
+    hour = 0;
+    
     constructor(Alarm)
     {
         this.Alarm = Alarm;
@@ -68,7 +79,7 @@ class NewAlarm
         this.target.querySelector("button").textContent = Alarm.textInfo["SaveButton"];
         this.target.querySelector("button").addEventListener("click", _=> this.addNewAlarm());
         
-        this.toggle();
+        this.setState(false);
     }
 
     addNewAlarm()
@@ -82,12 +93,22 @@ class NewAlarm
         const new_alarms = this.Alarm.alarms() === null? new Array() : this.Alarm.alarms();
         new_alarms.unshift(new_alarm_time);
         localStorage.setItem("alarms", JSON.stringify(new_alarms));
+        
         this.Alarm.render();
-        this.toggle();
+        this.setState(false);
     }
     
-    toggle()
+    setState(isVisible)
     {
-        this.target.classList.toggle("hide");
+        this.isVisible = isVisible;
+        this.render();
+    }    
+    
+    render()
+    {
+        if (this.isVisible)
+            this.target.classList.remove("hide");
+        else
+            this.target.classList.add("hide");            
     }    
 }

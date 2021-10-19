@@ -30,12 +30,21 @@ class BackButton {
         this.AppObj = AppObj;
         this.AppObj.backButtonNode.textContent = this.AppObj.textInfo["BackButton"];
         this.AppObj.backButtonNode.addEventListener("click", _=> this.AppObj.setState(this.AppObj.homeContent()));
-        this.toggle();
+        this.setState(false);
     }
     
-    toggle()
+    setState(isVisible)
     {
-        this.AppObj.backButtonNode.classList.toggle("hide");
+        this.isVisible = isVisible;
+        this.render();
+    }
+    
+    render()
+    {
+        if (this.isVisible)
+            this.AppObj.backButtonNode.classList.remove("hide");
+        else
+            this.AppObj.backButtonNode.classList.add("hide");            
     }    
 }
 
@@ -44,13 +53,22 @@ class NewButton {
     {
         this.AppObj = AppObj;
         this.AppObj.newButtonNode.textContent = this.AppObj.textInfo["NewButton"];
-        this.AppObj.newButtonNode.addEventListener("click", _=> { this.AppObj.alarmContent().newAlarm.toggle(); this.AppObj.memoContent().newMemo.toggle(); });
-        this.toggle();
+        this.AppObj.newButtonNode.addEventListener("click", _=> { this.AppObj.alarmContent().newAlarm.setState(true); this.AppObj.memoContent().newMemo.setState(true); });
+        this.setState(false);
     }
 
-    toggle()
+    setState(isVisible)
     {
-        this.AppObj.newButtonNode.classList.toggle("hide");
+        this.isVisible = isVisible;
+        this.render();
+    }
+    
+    render()
+    {
+        if (this.isVisible)
+            this.AppObj.newButtonNode.classList.remove("hide");
+        else
+            this.AppObj.newButtonNode.classList.add("hide");            
     }    
 }
 
@@ -66,7 +84,7 @@ class App {
         const thisObj = 
         {
             textInfo: config["text-info"], nowContent: _=>this.nowContent, setState: newContent=>this.setState(newContent),
-            backButton: _=>this.backButton, newButton: _=>this.newButton, usingNewButton: _=>this.usingNewButton,
+            backButton: _=>this.backButton, newButton: _=>this.newButton, 
             alarmContent: _=>this.alarmContent, memoContent: _=>this.memoContent, albumContent: _=>this.albumContent, homeContent: _=>this.homeContent,
             alarmContentNode: target.querySelector("#alarm-content"), memoContentNode: target.querySelector("#memo-content"), albumContentNode: target.querySelector("#album-content"), homeContentNode: target.querySelector("#home-content"),
             backButtonNode: target.querySelector("#backButton button"), newButtonNode: target.querySelector("#newButton button")
@@ -79,32 +97,18 @@ class App {
         this.backButton = new BackButton(thisObj);
         this.newButton = new NewButton(thisObj);
         this.nowContent = this.homeContent;
+        this.homeContent.setState(true);
     }
     
     setState(newContent)
     {
-        this.nowContent.toggle();
-        this.backButton.toggle();
-        
-        if (newContent === this.homeContent)
-        {
-            if (this.usingNewButton)
-                this.newButton.toggle();
-            if (this.alarmContent.newAlarm.target.classList.contains("hide") === false)
-                this.alarmContent.newAlarm.toggle();
-            if (this.memoContent.newMemo.target.classList.contains("hide") === false)
-                this.memoContent.newMemo.toggle();
-        }        
-        else if (newContent === this.alarmContent || newContent === this.memoContent)
-        {
-            this.newButton.toggle();
-            this.usingNewButton = true;
-        }
-        else
-            this.usingNewButton = false;
-        
+        this.nowContent.setState(false);
+        this.backButton.setState(newContent !== this.homeContent);
+        this.newButton.setState(newContent === this.alarmContent || newContent === this.memoContent);
+        this.alarmContent.newAlarm.setState(false);
+        this.memoContent.newMemo.setState(false);
         this.nowContent = newContent;
-        this.nowContent.toggle();
+        this.nowContent.setState(true);
     }
 }
 

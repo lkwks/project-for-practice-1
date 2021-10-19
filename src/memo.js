@@ -18,13 +18,28 @@ export default class Memo
             }
         });
 
-        this.render();
+        this.setState(false);
     }
 
-    toggle()
+
+    setState(isVisible)
     {
-        this.target.classList.toggle("hide");
+        this.isVisible = isVisible;
+        this.render();
     }
+    
+    render()
+    {
+        if (this.isVisible)
+        {
+            this.memos = JSON.parse(localStorage.getItem("memos"));
+            if (this.memos !== null)
+                this.memoList.innerHTML = this.memos.map(elem => this.makeListItem(elem)).join("");
+            this.target.classList.remove("hide");
+        }
+        else
+            this.target.classList.add("hide");            
+    }    
     
     makeListItem(elem)
     {
@@ -34,12 +49,6 @@ export default class Memo
         return listItem.outerHTML;
     }
     
-    render()
-    {
-        this.memos = JSON.parse(localStorage.getItem("memos"));
-        if (this.memos !== null)
-            this.memoList.innerHTML = this.memos.map(elem => this.makeListItem(elem)).join("");
-    }    
 }
 
 
@@ -58,15 +67,24 @@ class NewMemo
                 this.target.value = '';
                 localStorage.setItem("memos", JSON.stringify(new_memos));
                 Memo.render();
-                this.toggle();
+                this.setState(false);
             }
         });
         
-        this.toggle();
+        this.setState(false);
     }
     
-    toggle()
+    setState(isVisible)
     {
-        this.target.classList.toggle("hide");
+        this.isVisible = isVisible;
+        this.render();
     }
+    
+    render()
+    {
+        if (this.isVisible)
+            this.target.classList.remove("hide");
+        else
+            this.target.classList.add("hide");            
+    }    
 }

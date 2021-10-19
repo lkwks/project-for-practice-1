@@ -11,7 +11,7 @@ export default class Album
             if (event.target.nodeName === "LI")
                 this.clickListItem(event.target);
         });
-        this.render();
+        this.setState(false);
     }
     
     clickListItem(target)
@@ -23,11 +23,6 @@ export default class Album
         this.albumViewFrame.style.backgroundImage = target.style.backgroundImage;
         this.albumViewFrame.style.backgroundPosition = `center center`;
     }
-
-    toggle()
-    {
-        this.target.classList.toggle("hide");
-    }
     
     makeListItem(elem)
     {
@@ -37,13 +32,25 @@ export default class Album
         return listItem.outerHTML;
     }
     
+    setState(isVisible)
+    {
+        this.isVisible = isVisible;
+        this.render();
+    }
+    
     render()
     {
-        fetch("./album/file_list.json")
-            .then(response => response.json())
-            .then(file_list =>
-            {
-                this.albumList.innerHTML = file_list.map(elem => this.makeListItem(elem)).join("");                
-            }); 
-    }
+        if (this.isVisible)
+        {
+            fetch("./album/file_list.json")
+                .then(response => response.json())
+                .then(file_list =>
+                {
+                    this.albumList.innerHTML = file_list.map(elem => this.makeListItem(elem)).join("");                
+                }); 
+            this.target.classList.remove("hide");
+        }
+        else
+            this.target.classList.add("hide");            
+    }        
 }

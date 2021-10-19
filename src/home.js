@@ -61,11 +61,23 @@ export default class Home
         this.render();
     }
     
-    toggle()
+    setState(isVisible)
     {
-        this.homeContent.classList.toggle("hide");
+        this.isVisible = isVisible;
+        this.render();
     }
-
+    
+    render()
+    {
+        if (this.isVisible)
+        {
+            this.homeContentWrapper.innerHTML = Object.keys(this.homeButtons).map((_, idx) => this.homeButtonBoxes[idx].node.outerHTML).join("");
+            this.homeContent.classList.remove("hide");
+        }
+        else
+            this.homeContent.classList.add("hide");            
+    }    
+    
     dragAction(now_box)
     {
         const new_button_list = new Object();
@@ -83,10 +95,6 @@ export default class Home
         Object.keys(new_button_list).forEach((elem, idx) => this.homeContent.querySelector("#box"+idx).appendChild(this.homeContent.querySelector("#button_"+elem)));
     }
     
-    render()
-    {
-        this.homeContentWrapper.innerHTML = Object.keys(this.homeButtons).map((_, idx) => this.homeButtonBoxes[idx].node.outerHTML).join("");
-    }
 }
 
 class ButtonBox 
