@@ -22,7 +22,7 @@ export default class Home
         Object.keys(this.homeButtons).forEach((elem, idx) =>
         {
             const bbox = new ButtonBox(idx);
-            const abtn = new AppButton(this.homeButtons, bbox, elem);
+            const abtn = new AppButton(this.homeButtons, bbox.node, elem);
             this.homeButtonBoxes[idx] = bbox;
             this.appButtons[elem] = abtn;
         });
