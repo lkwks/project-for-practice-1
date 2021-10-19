@@ -10,16 +10,19 @@ export default class Album
         this.target.addEventListener("click", event=>
         {
             if (event.target.nodeName === "LI")
-            {
-                if (this.now_clicked !== null)
-                    this.now_clicked.classList.remove("album-clicked");
-                event.target.classList.add("album-clicked");
-                this.albumViewFrame.style.backgroundImage = event.target.style.backgroundImage;
-                this.albumViewFrame.style.backgroundPosition = `center center`;
-                this.now_clicked = event.target;
-            }
+                this.clickListItem(event.target);
         });
         this.render();
+    }
+    
+    clickListItem(target)
+    {
+        if (this.now_clicked !== null)
+            this.now_clicked.classList.remove("album-clicked");
+        this.now_clicked = target;
+        target.classList.add("album-clicked");
+        this.albumViewFrame.style.backgroundImage = target.style.backgroundImage;
+        this.albumViewFrame.style.backgroundPosition = `center center`;
     }
 
     toggle()
