@@ -5,6 +5,16 @@ export default class Album
         this.AppObj = AppObj;
         this.target = AppObj.albumContentNode;
         this.now_clicked=null;
+        this.render();
+    }
+
+    toggle()
+    {
+        this.target.classList.toggle("hide");
+    }
+    
+    render()
+    {
         fetch("./album/file_list.json")
             .then(response => response.json())
             .then(file_list =>
@@ -30,17 +40,5 @@ export default class Album
                     }
                 });
             }); 
-    }
-
-    show()
-    {
-        this.AppObj.turnOffAll();
-        this.target.style.display = 'block';
-        this.AppObj.backButton().show();
-    }
-    
-    hide()
-    {
-        this.target.style.display = 'none';
     }
 }

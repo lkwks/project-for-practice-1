@@ -5,7 +5,7 @@ export default class Memo
         this.AppObj = AppObj;
         this.target = AppObj.memoContentNode;
         this.now_clicked = null;
-        this.newMemo = new NewMemo({newMemoNode: this.target.querySelector("input"), textInfo: AppObj.textInfo, memos: _=>this.memos, renew:_=>this.renew(), show:_=>this.show()});
+        this.newMemo = new NewMemo({newMemoNode: this.target.querySelector("input"), textInfo: AppObj.textInfo, memos: _=>this.memos, render:_=>this.render()});
         
         this.target.querySelector("ul").addEventListener("click", event => 
         {
@@ -18,10 +18,10 @@ export default class Memo
             }
         });
 
-        this.renew();
+        this.render();
     }
     
-    renew()
+    render()
     {
         this.target.querySelector("ul").innerHTML = '';    
         this.memos = JSON.parse(localStorage.getItem("memos"));
@@ -35,17 +35,9 @@ export default class Memo
             });
     }
     
-    show()
+    toggle()
     {
-        this.AppObj.turnOffAll();
-        this.target.style.display = 'block';
-        this.AppObj.backButton().show();
-        this.AppObj.newButton().show();
-    }
-    
-    hide()
-    {
-        this.target.style.display = 'none';
+        this.target.classList.toggle("hide");
     }
 }
 
@@ -64,19 +56,16 @@ class NewMemo
                 new_memos.unshift(this.target.value);
                 this.target.value = '';
                 localStorage.setItem("memos", JSON.stringify(new_memos));
-                Memo.renew();
-                Memo.show();
+                Memo.render();
+                this.toggle();
             }
         });
+        
+        this.toggle();
     }
     
-    show()
+    toggle()
     {
-        this.target.style.display = 'inline';
-    }
-    
-    hide()
-    {
-        this.target.style.display = 'none';
+        this.target.classList.toggle("hide");
     }
 }

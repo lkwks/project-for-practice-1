@@ -32,11 +32,40 @@ export default class Home
         this.AppObj = AppObj;
         this.homeContent = this.AppObj.homeContentNode;
         this.homeButtons = homeButtons;
-        
-        Object.keys(homeButtons).forEach((elem, idx) => 
+        this.render();
+    }
+    
+    toggle()
+    {
+        this.homeContent.classList.toggle("hide");
+    }
+
+    dragActions(now_box)
+    {
+        const new_button_list = new Object();
+        const now_order = Object.keys(this.homeButtons);
+        for (let i=0, j=0; i<now_order.length; i++)
+            if ("box"+i === now_box)
+                new_button_list[this.now_dragging] = this.homeButtons[this.now_dragging];
+            else
+            {
+                if (now_order[j] == this.now_dragging) j++;
+                new_button_list[now_order[j]] = this.homeButtons[now_order[j++]];
+            }
+        Object.keys(new_button_list).forEach((elem, idx) =>
+        {
+            document.getElementById("box"+idx).appendChild(document.getElementById("button_"+elem));
+        });
+        localStorage.setItem("homeButtons", JSON.stringify(new_button_list));
+        this.homeButtons = new_button_list;
+    }
+    
+    render()
+    {
+        Object.keys(this.homeButtons).forEach((elem, idx) => 
         {
             const button_box = document.createElement("div");
-            this.homeContent.appendChild(button_box);
+            this.homeContent.querySelector(".home-content-wrapper").appendChild(button_box);
             button_box.classList.add("app-button-box");
             button_box.setAttribute("id", "box"+idx);
                     
@@ -71,44 +100,12 @@ export default class Home
         this.homeContent.addEventListener("click", event=>
         {
             if (event.target.id === "button_alarm")
-                this.AppObj.alarmContent().show(); 
+                this.AppObj.setState(this.AppObj.alarmContent()); 
             if (event.target.id === "button_memo")
-                this.AppObj.memoContent().show(); 
+                this.AppObj.setState(this.AppObj.memoContent()); 
             if (event.target.id === "button_album")
-                this.AppObj.albumContent().show();  
+                this.AppObj.setState(this.AppObj.albumContent()); 
         });
-
-    }
-    
-    show()
-    {
-        this.AppObj.turnOffAll();
-        this.homeContent.style.display = 'flex';
-    }
-    
-    hide()
-    {
-        this.homeContent.style.display = 'none';
-    }
-    
-    dragActions(now_box)
-    {
-        const new_button_list = new Object();
-        const now_order = Object.keys(this.homeButtons);
-        for (let i=0, j=0; i<now_order.length; i++)
-            if ("box"+i === now_box)
-                new_button_list[this.now_dragging] = this.homeButtons[this.now_dragging];
-            else
-            {
-                if (now_order[j] == this.now_dragging) j++;
-                new_button_list[now_order[j]] = this.homeButtons[now_order[j++]];
-            }
-        Object.keys(new_button_list).forEach((elem, idx) =>
-        {
-            document.getElementById("box"+idx).appendChild(document.getElementById("button_"+elem));
-        });
-        localStorage.setItem("homeButtons", JSON.stringify(new_button_list));
-        this.homeButtons = new_button_list;
     }
 }
 

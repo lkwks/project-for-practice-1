@@ -4,8 +4,7 @@ export default class Alarm
     {
         this.AppObj = AppObj;
         this.target = AppObj.alarmContentNode;
-        this.newAlarm = new NewAlarm({textInfo:AppObj.textInfo, newAlarmNode: this.target.querySelector("#new-alarm"), addNewAlarm: _=>this.addNewAlarm()});
-        this.renew();
+        this.newAlarm = new NewAlarm({textInfo:AppObj.textInfo, newAlarmNode: this.target.querySelector("#new-alarm"), render: _=>this.render(), alarms:_=>this.alarms});
         this.target.querySelector("ul").addEventListener("click", e=>
         {
             this.target.querySelectorAll("li").forEach((elem, idx) =>
@@ -14,42 +13,19 @@ export default class Alarm
                 {
                     this.alarms.splice(idx, 1);
                     localStorage.setItem("alarms", JSON.stringify(this.alarms));
-                    this.renew();
-                    this.show();
+                    this.render();
                 }
             });
         });
+        this.render();
     }
     
-    show()
+    toggle()
     {
-        this.AppObj.turnOffAll();
-        this.target.style.display = 'block';
-        this.AppObj.backButton().show();
-        this.AppObj.newButton().show();
+        this.target.classList.toggle("hide");
     }
     
-    hide()
-    {
-        this.target.style.display = 'none';
-    }
-
-    addNewAlarm()
-    {
-        let new_alarm_time = parseInt(this.target.querySelector("#new-minute").value) + this.target.querySelector("#new-hour").value * 60;
-        if (parseInt(this.target.querySelector("#new-ampm").value) === 1)
-            new_alarm_time += 720;
-        if (parseInt(this.target.querySelector("#new-hour").value) === 12)
-            new_alarm_time -= 720;
-    
-        const new_alarms = this.alarms === null? new Array() : this.alarms;
-        new_alarms.unshift(new_alarm_time);
-        localStorage.setItem("alarms", JSON.stringify(new_alarms));
-        this.renew();
-        this.show();
-    }
-
-    renew()
+    render()
     {
         this.target.querySelector("ul").innerHTML = '';
         this.alarms = JSON.parse(localStorage.getItem("alarms"));
@@ -77,18 +53,35 @@ class NewAlarm
 {
     constructor(Alarm)
     {
+        this.Alarm = Alarm;
         this.target = Alarm.newAlarmNode;
+        
+        this.target.querySelector("#new-minute").addEventListener("change", e=>this.minute = parseInt(e.target.value));
+        this.target.querySelector("#new-hour").addEventListener("change", e=>this.hour = parseInt(e.target.value));
+        this.target.querySelector("#new-ampm").addEventListener("change", e=>this.ampm = parseInt(e.target.value));
         this.target.querySelector("button").textContent = Alarm.textInfo["SaveButton"];
-        this.target.querySelector("button").addEventListener("click", _=> Alarm.addNewAlarm());
+        this.target.querySelector("button").addEventListener("click", _=> this.addNewAlarm());
+        
+        this.toggle();
+    }
+
+    addNewAlarm()
+    {
+        let new_alarm_time = this.minute + this.hour * 60;
+        if (this.ampm === 1)
+            new_alarm_time += 720;
+        if (this.hour === 12)
+            new_alarm_time -= 720;
+    
+        const new_alarms = this.Alarm.alarms() === null? new Array() : this.Alarm.alarms();
+        new_alarms.unshift(new_alarm_time);
+        localStorage.setItem("alarms", JSON.stringify(new_alarms));
+        this.Alarm.render();
+        this.toggle();
     }
     
-    show()
+    toggle()
     {
-        this.target.style.display = 'block';
-    }
-    
-    hide()
-    {
-        this.target.style.display = 'none';
-    }
+        this.target.classList.toggle("hide");
+    }    
 }
