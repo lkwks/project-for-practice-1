@@ -4,6 +4,10 @@ ul {
     list-style-type: none;
 }
 
+.hide {
+    display: none;
+}
+
 .app-frame {
     height: 800px;
     width: 400px;
@@ -48,12 +52,16 @@ ul {
 
 /* home content */
 
-#home-content{
+.home-content-wrapper {
+    display: flex;
     justify-content: center;
     padding: 30px;
 }
 
 .app-button-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100px;
     height: 100px; 
 }

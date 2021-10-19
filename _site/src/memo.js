@@ -2,12 +2,12 @@ export default class Memo
 {
     constructor(AppObj)
     {
-        this.AppObj = AppObj;
         this.target = AppObj.memoContentNode;
+        this.memoList = this.target.querySelector("ul");
         this.now_clicked = null;
-        this.newMemo = new NewMemo({newMemoNode: this.target.querySelector("input"), textInfo: AppObj.textInfo, memos: _=>this.memos, renew:_=>this.renew(), show:_=>this.show()});
+        this.newMemo = new NewMemo({newMemoNode: this.target.querySelector("input"), textInfo: AppObj.textInfo, memos: _=>this.memos, render:_=>this.render()});
         
-        this.target.querySelector("ul").addEventListener("click", event => 
+        this.memoList.addEventListener("click", event => 
         {
             if (event.target.nodeName === "LI")
             {
@@ -18,35 +18,28 @@ export default class Memo
             }
         });
 
-        this.renew();
+        this.render();
+    }
+
+    toggle()
+    {
+        this.target.classList.toggle("hide");
     }
     
-    renew()
+    makeListItem(elem)
     {
-        this.target.querySelector("ul").innerHTML = '';    
+        const listItem = document.createElement("li");
+        listItem.textContent = elem;
+        listItem.classList.add("memo-element");
+        return listItem.outerHTML;
+    }
+    
+    render()
+    {
         this.memos = JSON.parse(localStorage.getItem("memos"));
         if (this.memos !== null)
-            this.memos.forEach(elem =>
-            {
-                const memo_elem = document.createElement("li");
-                this.target.querySelector("ul").appendChild(memo_elem);
-                memo_elem.textContent = elem;
-                memo_elem.classList.add("memo-element");
-            });
-    }
-    
-    show()
-    {
-        this.AppObj.turnOffAll();
-        this.target.style.display = 'block';
-        this.AppObj.backButton().show();
-        this.AppObj.newButton().show();
-    }
-    
-    hide()
-    {
-        this.target.style.display = 'none';
-    }
+            this.memoList.innerHTML = this.memos.map(elem => this.makeListItem(elem)).join("");
+    }    
 }
 
 
@@ -64,19 +57,16 @@ class NewMemo
                 new_memos.unshift(this.target.value);
                 this.target.value = '';
                 localStorage.setItem("memos", JSON.stringify(new_memos));
-                Memo.renew();
-                Memo.show();
+                Memo.render();
+                this.toggle();
             }
         });
+        
+        this.toggle();
     }
     
-    show()
+    toggle()
     {
-        this.target.style.display = 'inline';
-    }
-    
-    hide()
-    {
-        this.target.style.display = 'none';
+        this.target.classList.toggle("hide");
     }
 }
