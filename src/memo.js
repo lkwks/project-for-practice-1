@@ -4,6 +4,7 @@ export default class Memo
     {
         this.AppObj = AppObj;
         this.target = AppObj.memoContentNode;
+        this.memoList = this.target.querySelector("ul");
         this.now_clicked = null;
         this.newMemo = new NewMemo({newMemoNode: this.target.querySelector("input"), textInfo: AppObj.textInfo, memos: _=>this.memos, render:_=>this.render()});
         
@@ -23,13 +24,13 @@ export default class Memo
     
     render()
     {
-        this.target.querySelector("ul").innerHTML = '';    
+        this.memoList.innerHTML = '';    
         this.memos = JSON.parse(localStorage.getItem("memos"));
         if (this.memos !== null)
             this.memos.forEach(elem =>
             {
                 const memo_elem = document.createElement("li");
-                this.target.querySelector("ul").appendChild(memo_elem);
+                this.memoList.appendChild(memo_elem);
                 memo_elem.textContent = elem;
                 memo_elem.classList.add("memo-element");
             });
