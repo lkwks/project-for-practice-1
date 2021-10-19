@@ -77,20 +77,15 @@ export default class Home
                 if (now_order[j] == this.now_dragging) j++;
                 new_button_list[now_order[j]] = this.homeButtons[now_order[j++]];
             }
+        Object.keys(new_button_list).map((elem, idx) => this.homeButtonBoxes[idx].setState(this.appButtons[elem].node));
         localStorage.setItem("homeButtons", JSON.stringify(new_button_list));
         this.homeButtons = new_button_list;
         this.render();
     }
     
-    fillBoxWithButton(elem, idx)
-    {
-        this.homeButtonBoxes[idx].setState(this.appButtons[elem].node);
-        return this.homeButtonBoxes[idx].node.outerHTML;
-    }
-    
     render()
     {
-        this.homeContentWrapper.innerHTML = Object.keys(this.homeButtons).map((elem, idx) => this.fillBoxWithButton(elem, idx)).join("");
+        this.homeContentWrapper.innerHTML = Object.keys(this.homeButtons).map((_, idx) => this.homeButtonBoxes[idx].node.outerHTML).join("");
     }
 }
 
@@ -105,6 +100,7 @@ class ButtonBox
     
     setState(appButtonNode)
     {
+        appButtonNode.parentNode.removeChild(appButtonNode);
         this.node.appendChild(appButtonNode);
     }
 }
