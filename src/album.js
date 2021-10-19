@@ -4,6 +4,7 @@ export default class Album
     {
         this.AppObj = AppObj;
         this.target = AppObj.albumContentNode;
+        this.albumList = this.target.querySelector("ul");
         this.now_clicked=null;
         this.render();
     }
@@ -22,7 +23,7 @@ export default class Album
                 file_list.forEach(elem => 
                 {
                     const img_frame = document.createElement("li");
-                    this.target.querySelector("ul").appendChild(img_frame);
+                    this.albumList.appendChild(img_frame);
                     img_frame.classList.add("album-img-frame");
                     img_frame.style.backgroundImage = `url(./album/${elem})`;
                 });
