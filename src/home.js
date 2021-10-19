@@ -17,9 +17,7 @@ export function clock(AlarmContent)
         if (new_alarms.length !== alarms.length)
         {
             localStorage.setItem("alarms", JSON.stringify(new_alarms));
-            AlarmContent().renew();
-            if (AlarmContent().target.style.display === 'block')
-                AlarmContent().show();
+            AlarmContent().render();
         }
     }
     setTimeout(_=>clock(AlarmContent), 1000);
