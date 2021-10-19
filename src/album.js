@@ -2,7 +2,6 @@ export default class Album
 {
     constructor(AppObj)
     {
-        this.AppObj = AppObj;
         this.target = AppObj.albumContentNode;
         this.albumList = this.target.querySelector("ul");
         this.albumViewFrame = this.target.querySelector("#album-view-frame");
