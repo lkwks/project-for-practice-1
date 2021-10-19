@@ -21,10 +21,12 @@ export default class Home
         
         Object.keys(this.homeButtons).forEach((elem, idx) =>
         {
-            const bbox = new ButtonBox(idx), abtn = new AppButton(this.homeButtons, elem);
+            const bbox = new ButtonBox(idx);
+            const abtn = new AppButton(this.homeButtons, bbox, elem);
             this.homeButtonBoxes[idx] = bbox;
             this.appButtons[elem] = abtn;
         });
+        Object.keys(new_button_list).map((elem, idx) => this.homeButtonBoxes[idx].setState(this.appButtons[elem].node));
             
         
         this.homeContentWrapper = this.homeContent.querySelector(".home-content-wrapper");
@@ -107,12 +109,13 @@ class ButtonBox
 
 class AppButton
 {
-    constructor(homeButtons, elem)
+    constructor(homeButtons, parentBox, elem)
     {
         this.node = document.createElement("button");
         this.node.setAttribute("id", "button_"+elem);
         this.node.setAttribute("draggable", "true");
         this.node.classList.add("app-button");
         this.node.textContent = homeButtons[elem];
+        parentBox.appendChild(this.node);
     }
 }
