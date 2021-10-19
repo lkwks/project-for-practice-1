@@ -44,7 +44,7 @@ export default class Alarm
         delete_button.textContent = this.AppObj.textInfo["DeleteButton"];
         delete_button.classList.add("button");
                 
-        return listItem;
+        return listItem.outerHTML;
     }
     
     render()
