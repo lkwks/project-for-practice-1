@@ -6,7 +6,7 @@ export default class Alarm
         this.target = AppObj.alarmContentNode;
         this.alarmList = this.target.querySelector("ul");
         this.newAlarm = new NewAlarm({textInfo:AppObj.textInfo, newAlarmNode: this.target.querySelector("#new-alarm"), render: _=>this.render(), alarms:_=>this.alarms});
-        this.target.querySelector("ul").addEventListener("click", e=>
+        this.alarmList.addEventListener("click", e=>
         {
             this.target.querySelectorAll("li").forEach((elem, idx) =>
             {
