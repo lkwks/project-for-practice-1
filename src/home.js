@@ -33,51 +33,6 @@ export default class Home
         this.homeContent = this.AppObj.homeContentNode;
         this.homeButtons = homeButtons;
         this.homeContentWrapper = this.homeContent.querySelector(".home-content-wrapper");
-        this.render();
-    }
-    
-    toggle()
-    {
-        this.homeContent.classList.toggle("hide");
-    }
-
-    dragActions(now_box)
-    {
-        const new_button_list = new Object();
-        const now_order = Object.keys(this.homeButtons);
-        for (let i=0, j=0; i<now_order.length; i++)
-            if ("box"+i === now_box)
-                new_button_list[this.now_dragging] = this.homeButtons[this.now_dragging];
-            else
-            {
-                if (now_order[j] == this.now_dragging) j++;
-                new_button_list[now_order[j]] = this.homeButtons[now_order[j++]];
-            }
-        Object.keys(new_button_list).forEach((elem, idx) =>
-        {
-            document.getElementById("box"+idx).appendChild(document.getElementById("button_"+elem));
-        });
-        localStorage.setItem("homeButtons", JSON.stringify(new_button_list));
-        this.homeButtons = new_button_list;
-    }
-    
-    render()
-    {
-        Object.keys(this.homeButtons).forEach((elem, idx) => 
-        {
-            const button_box = document.createElement("div");
-            this.homeContentWrapper.appendChild(button_box);
-            button_box.classList.add("app-button-box");
-            button_box.setAttribute("id", "box"+idx);
-                    
-            const app_button = document.createElement("button");
-            button_box.appendChild(app_button);
-            app_button.setAttribute("id", "button_"+elem);
-            app_button.setAttribute("draggable", "true");
-            app_button.classList.add("app-button");
-            app_button.textContent = this.homeButtons[elem];
-        });
-
         this.homeContent.addEventListener("dragover", e=>
         {
             if (e.target.className === "app-button-box")
@@ -107,6 +62,53 @@ export default class Home
             if (event.target.id === "button_album")
                 this.AppObj.setState(this.AppObj.albumContent()); 
         });
+        this.render();
+    }
+    
+    toggle()
+    {
+        this.homeContent.classList.toggle("hide");
+    }
+
+    dragActions(now_box)
+    {
+        const new_button_list = new Object();
+        const now_order = Object.keys(this.homeButtons);
+        for (let i=0, j=0; i<now_order.length; i++)
+            if ("box"+i === now_box)
+                new_button_list[this.now_dragging] = this.homeButtons[this.now_dragging];
+            else
+            {
+                if (now_order[j] == this.now_dragging) j++;
+                new_button_list[now_order[j]] = this.homeButtons[now_order[j++]];
+            }
+        Object.keys(new_button_list).forEach((elem, idx) =>
+        {
+            document.getElementById("box"+idx).appendChild(document.getElementById("button_"+elem));
+        });
+        localStorage.setItem("homeButtons", JSON.stringify(new_button_list));
+        this.homeButtons = new_button_list;
+    }
+    
+    makeButtonBox(elem, idx)
+    {
+        const button_box = document.createElement("div");
+        button_box.classList.add("app-button-box");
+        button_box.setAttribute("id", "box"+idx);
+                    
+        const app_button = document.createElement("button");
+        button_box.appendChild(app_button);
+        app_button.setAttribute("id", "button_"+elem);
+        app_button.setAttribute("draggable", "true");
+        app_button.classList.add("app-button");
+        app_button.textContent = this.homeButtons[elem];
+            
+        return button_box;
+    }
+    
+    render()
+    {
+        this.homeContentWrapper.innerHTML = Object.keys(this.homeButtons).map((elem, idx) => makeButtonBox(elem, idx)).join("");
     }
 }
 
