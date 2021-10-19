@@ -21,25 +21,26 @@ export default class Memo
 
         this.render();
     }
-    
-    render()
-    {
-        this.memoList.innerHTML = '';    
-        this.memos = JSON.parse(localStorage.getItem("memos"));
-        if (this.memos !== null)
-            this.memos.forEach(elem =>
-            {
-                const memo_elem = document.createElement("li");
-                this.memoList.appendChild(memo_elem);
-                memo_elem.textContent = elem;
-                memo_elem.classList.add("memo-element");
-            });
-    }
-    
+
     toggle()
     {
         this.target.classList.toggle("hide");
     }
+    
+    makeListItem(elem)
+    {
+        const listItem = document.createElement("li");
+        listItem.textContent = elem;
+        listItem.classList.add("memo-element");
+        return listItem;
+    }
+    
+    render()
+    {
+        this.memos = JSON.parse(localStorage.getItem("memos"));
+        if (this.memos !== null)
+            this.memoList.innerHTML = this.memos.map(elem => makeListItem(elem)).join("");
+    }    
 }
 
 
