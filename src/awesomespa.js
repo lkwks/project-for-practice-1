@@ -90,7 +90,7 @@ class App {
         {
             if (this.usingNewButton)
                 this.newButton.toggle();
-            if (this.alarmConten.newAlarm.target.classList.contains("hide") === false)
+            if (this.alarmContent.newAlarm.target.classList.contains("hide") === false)
                 this.alarmContent.newAlarm.toggle();
             if (this.memoContent.newMemo.target.classList.contains("hide") === false)
                 this.memoContent.newMemo.toggle();
