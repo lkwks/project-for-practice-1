@@ -34,7 +34,7 @@ export default class Album
         const listItem = document.createElement("li");
         listItem.classList.add("album-img-frame");
         listItem.style.backgroundImage = `url(./album/${elem})`;
-        return listItem;
+        return listItem.outerHTML;
     }
     
     render()
