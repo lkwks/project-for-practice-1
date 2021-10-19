@@ -90,7 +90,7 @@ export default class Home
     
     render()
     {
-        this.homeContentWrapper.innerHTML = Object.keys(this.homeButtons).map((elem, idx) => fillBoxWithButton(elem, idx)).join("");
+        this.homeContentWrapper.innerHTML = Object.keys(this.homeButtons).map((elem, idx) => this.fillBoxWithButton(elem, idx)).join("");
     }
 }
 
