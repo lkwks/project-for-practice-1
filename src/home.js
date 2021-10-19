@@ -1,40 +1,37 @@
-export function clock(AlarmContent)
-{
-    const time = new Date();
-    const year = time.getFullYear(), month = time.getMonth() + 1, day = time.getDate();
-    const hour = time.getHours(), minute = time.getMinutes(), second = time.getSeconds();
-    document.getElementById('clock').textContent = `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분 ${second}초`;
-    
-    const alarms = JSON.parse(localStorage.getItem("alarms"));
-    if (alarms !== null)
-    {
-        const new_alarms = new Array();
-        for (let elem of alarms)
-            if (hour*60+minute === elem)
-                alert(`${hour}시 ${minute}분`);
-            else
-                new_alarms.push(elem);
-        if (new_alarms.length !== alarms.length)
-        {
-            localStorage.setItem("alarms", JSON.stringify(new_alarms));
-            AlarmContent().render();
-        }
-    }
-    setTimeout(_=>clock(AlarmContent), 1000);
-}
-
 export default class Home
 {
-    constructor(AppObj, homeButtons) 
+    homeButtonBoxes = {};
+    appButtons = {};
+    
+    constructor(AppObj) 
     {
         this.AppObj = AppObj;
         this.homeContent = this.AppObj.homeContentNode;
-        this.homeButtons = homeButtons;
+        
+        this.homeButtons = JSON.parse(localStorage.getItem("homeButtons"));
+    
+        if (this.homeButtons === null)
+            fetch("pages.json")
+                .then(response => response.json())
+                .then(homeButtons => 
+                {
+                    localStorage.setItem("homeButtons", JSON.stringify(homeButtons));
+                    this.homeButtons = homeButtons;
+                });
+        
+        Object.keys(this.homeButtons).forEach((elem, idx) =>
+        {
+            const bbox = new ButtonBox(idx), abtn = new AppButton(this.homeButtons, elem);
+            this.homeButtonBoxes[idx] = bbox;
+            this.appButtons[elem] = abtn;
+        });
+            
+        
         this.homeContentWrapper = this.homeContent.querySelector(".home-content-wrapper");
         this.homeContent.addEventListener("dragover", e=>
         {
             if (e.target.className === "app-button-box")
-                this.dragActions(e.target.id)
+                this.setState(e.target.id)
         });
 
         this.homeContent.addEventListener("dragstart", event=>
@@ -68,7 +65,7 @@ export default class Home
         this.homeContent.classList.toggle("hide");
     }
 
-    dragActions(now_box)
+    setState(now_box)
     {
         const new_button_list = new Object();
         const now_order = Object.keys(this.homeButtons);
@@ -80,35 +77,46 @@ export default class Home
                 if (now_order[j] == this.now_dragging) j++;
                 new_button_list[now_order[j]] = this.homeButtons[now_order[j++]];
             }
-        Object.keys(new_button_list).forEach((elem, idx) =>
-        {
-            document.getElementById("box"+idx).appendChild(document.getElementById("button_"+elem));
-        });
         localStorage.setItem("homeButtons", JSON.stringify(new_button_list));
         this.homeButtons = new_button_list;
+        this.render();
     }
     
-    makeButtonBox(elem, idx)
+    fillBoxWithButton(elem, idx)
     {
-        const button_box = document.createElement("div");
-        button_box.classList.add("app-button-box");
-        button_box.setAttribute("id", "box"+idx);
-                    
-        const app_button = document.createElement("button");
-        button_box.appendChild(app_button);
-        app_button.setAttribute("id", "button_"+elem);
-        app_button.setAttribute("draggable", "true");
-        app_button.classList.add("app-button");
-        app_button.textContent = this.homeButtons[elem];
-            
-        return button_box;
+        this.homeButtonBoxes[idx].setState(this.appButtons[elem].node);
+        return this.homeButtonBoxes[idx].node;
     }
     
     render()
     {
-        this.homeContentWrapper.innerHTML = Object.keys(this.homeButtons).map((elem, idx) => makeButtonBox(elem, idx)).join("");
+        this.homeContentWrapper.innerHTML = Object.keys(this.homeButtons).map((elem, idx) => fillBoxWithButton(elem, idx)).join("");
     }
 }
 
+class ButtonBox 
+{
+    constructor(idx)
+    {
+        this.node = document.createElement("div");
+        this.node.classList.add("app-button-box");
+        this.node.setAttribute("id", "box"+idx);
+    }
+    
+    setState(appButtonNode)
+    {
+        this.node.appendChild(appButtonNode);
+    }
+}
 
-
+class AppButton
+{
+    constructor(homeButtons, elem)
+    {
+        this.node = document.createElement("button");
+        this.node.setAttribute("id", "button_"+elem);
+        this.node.setAttribute("draggable", "true");
+        this.node.classList.add("app-button");
+        this.node.textContent = homeButtons[elem];
+    }
+}
