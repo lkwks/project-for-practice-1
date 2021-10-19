@@ -32,6 +32,7 @@ export default class Home
         this.AppObj = AppObj;
         this.homeContent = this.AppObj.homeContentNode;
         this.homeButtons = homeButtons;
+        this.homeContentWrapper = this.homeContent.querySelector(".home-content-wrapper");
         this.render();
     }
     
@@ -65,7 +66,7 @@ export default class Home
         Object.keys(this.homeButtons).forEach((elem, idx) => 
         {
             const button_box = document.createElement("div");
-            this.homeContent.querySelector(".home-content-wrapper").appendChild(button_box);
+            this.homeContentWrapper.appendChild(button_box);
             button_box.classList.add("app-button-box");
             button_box.setAttribute("id", "box"+idx);
                     
