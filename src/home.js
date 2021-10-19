@@ -85,7 +85,7 @@ export default class Home
     fillBoxWithButton(elem, idx)
     {
         this.homeButtonBoxes[idx].setState(this.appButtons[elem].node);
-        return this.homeButtonBoxes[idx].node;
+        return this.homeButtonBoxes[idx].node.outerHTML;
     }
     
     render()
