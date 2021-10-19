@@ -39,7 +39,7 @@ export default class Memo
     {
         this.memos = JSON.parse(localStorage.getItem("memos"));
         if (this.memos !== null)
-            this.memoList.innerHTML = this.memos.map(elem => makeListItem(elem)).join("");
+            this.memoList.innerHTML = this.memos.map(elem => this.makeListItem(elem)).join("");
     }    
 }
 
