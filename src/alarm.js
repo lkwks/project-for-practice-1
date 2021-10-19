@@ -11,10 +11,7 @@ export default class Alarm
             this.target.querySelectorAll("li").forEach((elem, idx) =>
             {
                 if (e.target.parentNode === elem)
-                {
                     this.deleteListItem(idx);
-                    this.render();
-                }
             });
         });
         this.render();
@@ -24,6 +21,7 @@ export default class Alarm
     {
         this.alarms.splice(idx, 1);
         localStorage.setItem("alarms", JSON.stringify(this.alarms));
+        this.render();
     }
     
     toggle()
