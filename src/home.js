@@ -32,7 +32,7 @@ export default class Home
         this.homeContent.addEventListener("dragover", e=>
         {
             if (e.target.className === "app-button-box")
-                this.setState(e.target.id)
+                this.dragAction(e.target.id)
         });
 
         this.homeContent.addEventListener("dragstart", event=>
@@ -66,7 +66,7 @@ export default class Home
         this.homeContent.classList.toggle("hide");
     }
 
-    setState(now_box)
+    dragAction(now_box)
     {
         const new_button_list = new Object();
         const now_order = Object.keys(this.homeButtons);
@@ -78,10 +78,9 @@ export default class Home
                 if (now_order[j] == this.now_dragging) j++;
                 new_button_list[now_order[j]] = this.homeButtons[now_order[j++]];
             }
-        Object.keys(new_button_list).map((elem, idx) => this.homeButtonBoxes[idx].setState(this.appButtons[elem].node));
         localStorage.setItem("homeButtons", JSON.stringify(new_button_list));
         this.homeButtons = new_button_list;
-        this.render();
+        Object.keys(new_button_list).map((elem, idx) => this.homeButtonBoxes[idx].setState(this.appButtons[elem].node));
     }
     
     render()
