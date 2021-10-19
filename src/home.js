@@ -26,7 +26,6 @@ export default class Home
             this.homeButtonBoxes[idx] = bbox;
             this.appButtons[elem] = abtn;
         });
-        Object.keys(new_button_list).map((elem, idx) => this.homeButtonBoxes[idx].setState(this.appButtons[elem].node));
             
         
         this.homeContentWrapper = this.homeContent.querySelector(".home-content-wrapper");
