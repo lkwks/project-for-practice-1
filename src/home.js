@@ -80,7 +80,7 @@ export default class Home
             }
         localStorage.setItem("homeButtons", JSON.stringify(new_button_list));
         this.homeButtons = new_button_list;
-        Object.keys(new_button_list).map((elem, idx) => this.homeButtonBoxes[idx].setState(this.appButtons[elem].node));
+        Object.keys(new_button_list).forEach((elem, idx) => this.homeButtonBoxes[idx].setState(this.appButtons[elem].node));
     }
     
     render()
@@ -100,6 +100,7 @@ class ButtonBox
     
     setState(appButtonNode)
     {
+        console.log(this.node, appButtonNode);
         this.node.appendChild(appButtonNode);
     }
 }
