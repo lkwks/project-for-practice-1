@@ -26,29 +26,29 @@ export default class Alarm
         this.target.classList.toggle("hide");
     }
     
+    makeListItem(elem)
+    {
+        const listItem = document.createElement("li");
+        listItem.classList.add("alarm-element");
+        const ampm = elem < 720 ? "오전" : "오후";
+        let hour = Math.floor(elem/60);
+        if (hour > 12) hour -= 12;
+        if (hour === 0) hour = 12;
+        listItem.textContent = `${ampm} ${hour}시 ${(elem%60)}분`;
+    
+        const delete_button = document.createElement("button");
+        listItem.appendChild(delete_button);
+        delete_button.textContent = this.AppObj.textInfo["DeleteButton"];
+        delete_button.classList.add("button");
+                
+        return listItem;
+    }
+    
     render()
     {
         this.alarms = JSON.parse(localStorage.getItem("alarms"));
         if (this.alarms !== null)
-        {
-            this.alarmList.innerHTML = this.alarms.map(elem =>
-            {
-                const alarm_elem = document.createElement("li");
-                alarm_elem.classList.add("alarm-element");
-                const ampm = elem < 720 ? "오전" : "오후";
-                let hour = Math.floor(elem/60);
-                if (hour > 12) hour -= 12;
-                if (hour === 0) hour = 12;
-                alarm_elem.textContent = `${ampm} ${hour}시 ${(elem%60)}분`;
-    
-                const delete_button = document.createElement("button");
-                alarm_elem.appendChild(delete_button);
-                delete_button.textContent = this.AppObj.textInfo["DeleteButton"];
-                delete_button.classList.add("button");
-                
-                return alarm_elem;
-            });
-        }
+            this.alarmList.innerHTML = this.alarms.map(elem => this.makeListItem(elem)).join("");
     }
 }
 
