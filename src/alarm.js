@@ -1,5 +1,7 @@
 export default class Alarm
 {
+    isVisible = false;
+    
     constructor(AppObj)
     {
         this.AppObj = AppObj;
@@ -11,7 +13,7 @@ export default class Alarm
             if (e.target.parentNode.nodeName === "LI")
                 this.deleteListItem(e.target.parentNode.getAttribute("idx"));
         });
-        this.setState(false);
+        this.render();
     }
     
     deleteListItem(idx)
@@ -65,6 +67,7 @@ class NewAlarm
     ampm = 0;
     minute = 0;
     hour = 0;
+    isVisible = false;
     
     constructor(Alarm)
     {
@@ -77,7 +80,7 @@ class NewAlarm
         this.target.querySelector("button").textContent = Alarm.textInfo["SaveButton"];
         this.target.querySelector("button").addEventListener("click", _=> this.addNewAlarm());
         
-        this.setState(false);
+        this.render();
     }
 
     addNewAlarm()
