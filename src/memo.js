@@ -1,5 +1,7 @@
 export default class Memo
 {
+    isVisible = false;
+    
     constructor(AppObj)
     {
         this.target = AppObj.memoContentNode;
@@ -18,7 +20,7 @@ export default class Memo
             }
         });
 
-        this.setState(false);
+        this.render();
     }
 
 
@@ -54,6 +56,8 @@ export default class Memo
 
 class NewMemo 
 {
+    isVisible = false;
+    
     constructor(Memo)
     {
         this.target = Memo.newMemoNode;
@@ -71,7 +75,7 @@ class NewMemo
             }
         });
         
-        this.setState(false);
+        this.render();
     }
     
     setState(isVisible)
