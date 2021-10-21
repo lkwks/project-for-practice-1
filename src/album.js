@@ -1,5 +1,7 @@
 export default class Album
 {
+    isVisible = false;
+    
     constructor(AppObj)
     {
         this.target = AppObj.albumContentNode;
@@ -11,7 +13,7 @@ export default class Album
             if (event.target.nodeName === "LI")
                 this.clickListItem(event.target);
         });
-        this.setState(false);
+        this.render();
     }
     
     clickListItem(target)
