@@ -24,13 +24,16 @@ function clock(AlarmContent)
 }
 
 
-class BackButton {
+class BackButton 
+{
+    isVisible = false;
+    
     constructor(AppObj)
     {
         this.AppObj = AppObj;
         this.AppObj.backButtonNode.textContent = this.AppObj.textInfo["BackButton"];
         this.AppObj.backButtonNode.addEventListener("click", _=> this.AppObj.setState(this.AppObj.homeContent()));
-        this.setState(false);
+        this.render();
     }
     
     setState(isVisible)
@@ -48,13 +51,16 @@ class BackButton {
     }    
 }
 
-class NewButton {
+class NewButton 
+{
+    isVisible = false;
+    
     constructor(AppObj)
     {
         this.AppObj = AppObj;
         this.AppObj.newButtonNode.textContent = this.AppObj.textInfo["NewButton"];
         this.AppObj.newButtonNode.addEventListener("click", _=> { this.AppObj.alarmContent().newAlarm.setState(true); this.AppObj.memoContent().newMemo.setState(true); });
-        this.setState(false);
+        this.render();
     }
 
     setState(isVisible)
