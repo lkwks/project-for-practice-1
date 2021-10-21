@@ -8,11 +8,8 @@ export default class Alarm
         this.newAlarm = new NewAlarm({textInfo:AppObj.textInfo, newAlarmNode: this.target.querySelector("#new-alarm"), render: _=>this.render(), alarms:_=>this.alarms});
         this.alarmList.addEventListener("click", e=>
         {
-            this.target.querySelectorAll("li").forEach((elem, idx) =>
-            {
-                if (e.target.parentNode === elem)
-                    this.deleteListItem(idx);
-            });
+            if (e.target.parentNode.nodeName === "LI")
+                this.deleteListItem(e.target.parentNode.getAttribute("idx"));
         });
         this.setState(false);
     }
@@ -30,10 +27,11 @@ export default class Alarm
         this.render();
     }
     
-    makeListItem(elem)
+    makeListItem(elem, idx)
     {
         const listItem = document.createElement("li");
         listItem.classList.add("alarm-element");
+        listItem.setAttribute("idx", idx);
         const ampm = elem < 720 ? "오전" : "오후";
         let hour = Math.floor(elem/60);
         if (hour > 12) hour -= 12;
@@ -54,7 +52,7 @@ export default class Alarm
         {
             this.alarms = JSON.parse(localStorage.getItem("alarms"));
             if (this.alarms !== null)
-                this.alarmList.innerHTML = this.alarms.map(elem => this.makeListItem(elem)).join("");
+                this.alarmList.innerHTML = this.alarms.map((elem, idx) => this.makeListItem(elem, idx)).join("");
             this.target.classList.remove("hide");
         }
         else
