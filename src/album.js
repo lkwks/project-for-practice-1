@@ -2,15 +2,15 @@ export default class Album
 {
     isVisible = false;
     
-    constructor(AppObj)
+    constructor($target, hideHome)
     {
-        this.target = AppObj.albumContentNode;
-        this.albumList = this.target.querySelector("ul");
-        this.albumViewFrame = this.target.querySelector("#album-view-frame");
+        this.$target = $target;
+        this.hideHome = hideHome;
         this.now_clicked=null;
-        this.target.addEventListener("click", event=>
+        this.albumViewFrame = this.$target.querySelector("div");
+        this.$target.addEventListener("click", event=>
         {
-            if (event.target.nodeName === "LI")
+            if (event.target.nodeName === "IMG")
                 this.clickListItem(event.target);
         });
         this.render();
@@ -19,40 +19,42 @@ export default class Album
     clickListItem(target)
     {
         if (this.now_clicked !== null)
-            this.now_clicked.classList.remove("album-clicked");
+            this.now_clicked.parentNode.classList.remove("clicked");
         this.now_clicked = target;
-        target.classList.add("album-clicked");
-        this.albumViewFrame.style.backgroundImage = target.style.backgroundImage;
-        this.albumViewFrame.style.backgroundPosition = `center center`;
+        target.parentNode.classList.add("clicked");
+        this.albumViewFrame.style.backgroundImage = `url(${target.src})`;
     }
     
     makeListItem(elem)
     {
         const listItem = document.createElement("li");
-        listItem.classList.add("album-img-frame");
         listItem.style.backgroundImage = `url(./album/${elem})`;
-        return listItem.outerHTML;
+        listItem.appendChild(document.createElement("img"));
+        listItem.querySelector("img").src = `./album/${elem}`;
+        return listItem;
     }
     
-    setState(isVisible)
+
+    hide()
     {
-        this.isVisible = isVisible;
-        this.render();
+        this.$target.classList.add("hide");
     }
-    
+
+    show()
+    {
+        this.hideHome();
+        this.$target.classList.remove("hide");
+    }
+
     render()
     {
-        if (this.isVisible)
-        {
-            fetch("./album/file_list.json")
-                .then(response => response.json())
-                .then(file_list =>
-                {
-                    this.albumList.innerHTML = file_list.map(elem => this.makeListItem(elem)).join("");                
-                }); 
-            this.target.classList.remove("hide");
-        }
-        else
-            this.target.classList.add("hide");            
+        fetch("./album/file_list.json")
+            .then(response => response.json())
+            .then(file_list =>
+            {
+                file_list.forEach(elem => {
+                    this.$target.querySelector("ul").appendChild(this.makeListItem(elem));
+                });
+            });
     }        
 }

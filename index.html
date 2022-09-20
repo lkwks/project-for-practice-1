@@ -1,50 +1,55 @@
 <html>
     <head>
-        <title></title>
+        <meta charset="UTF-8">
+        <title>알람/메모/앨범 앱</title>
         <link rel="stylesheet" href="src/style.css">
     </head>
     <body>
         <article class="app-frame">
             <header>
                 <div class="status-bar">
-                    <nav id="backButton"><button class="button"></button></nav>
-                    <span id="clock"></span>
-                    <div id="newButton"><button class="button"></button></div>
+                    <div><button class="hide">BACK</button></div>
+                    <div><span></span></div>
+                    <div>
+                        <button class="hide">NEW</button>
+                        <button class="hide">NEW</button>
+                    </div>
                 </div>
             </header>
             <main>
-                <div id="page-content">
-                    <div id="home-content">
-                        <div class="home-content-wrapper">
-                        </div>
+                <div class="page-content">
+                    <div class="home-content">
+                        <div><button draggable="true">알람</button></div>
+                        <div><button draggable="true">메모</button></div>
+                        <div><button draggable="true">사진</button></div>
                     </div>
                     
-                    <div id="alarm-content" class="hide">
-                        <div id="new-alarm">
-                            <select id="new-ampm">
+                    <div class="alarm-content hide">
+                        <div class="hide">
+                            <select>
                                 <option value=0 selected>오전</option>
                                 <option value=1>오후</option>
                             </select>
-                            <input id="new-hour" type=number step=1 min=1 max=12 value=12> 시
-                            <input id="new-minute" type=number step=10 min=0 max=50 value=0> 분
-                            <button id="saveButton" class="button"></button>
+                            <input type=number step=1 min=1 max=12 value=12> 시
+                            <input type=number step=10 min=0 max=50 value=0> 분
+                            <button>저장</button>
                         </div>
-                        <ul id="alarm-list"></ul>
+                        <ul><li>a HH시 mm분<button>삭제</button></li></ul>
                     </div>
                     
-                    <div id="memo-content" class="hide">
-                        <input id="new-memo" type=text>
-                        <ul id="memo-list"></ul>
+                    <div class="memo-content hide">
+                        <input class="hide" type=text placeholder="메모를 입력하세요">
+                        <ul></ul>
                     </div>
                     
-                    <div id="album-content" class="hide">
-                        <ul id="album-flist"></ul>
-                        <div id="album-view-frame"></div>
+                    <div class="album-content hide">
+                        <ul></ul>
+                        <div></div>
                     </div>
                 </div>
             </main>
         </article>
-        <script type="module" src="src/awesomespa.js"></script>
+        <script type="module" src="src/awesomespa.js" charset="utf-8"></script>
     </body>
 </html>
     

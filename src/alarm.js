@@ -1,115 +1,103 @@
+import cache from "./cache.js";
+
+
 export default class Alarm
 {
-    isVisible = false;
-    
-    constructor(AppObj)
+    constructor($target, hideHome)
     {
-        this.AppObj = AppObj;
-        this.target = AppObj.alarmContentNode;
-        this.alarmList = this.target.querySelector("ul");
-        this.newAlarm = new NewAlarm({textInfo:AppObj.textInfo, newAlarmNode: this.target.querySelector("#new-alarm"), render: _=>this.render(), alarms:_=>this.alarms});
-        this.alarmList.addEventListener("click", e=>
+        this.$target = $target;
+        this.hideHome = hideHome;
+        this.alarms = cache.get("alarms");
+        if (this.alarms == null) this.alarms = [];
+        this.newAlarm = new NewAlarm($target.querySelector("div"), (elem, idx)=>this.makeListItem(elem, idx));
+        $target.querySelector("ul").addEventListener("click", e=>
         {
             if (e.target.parentNode.nodeName === "LI")
-                this.deleteListItem(e.target.parentNode.getAttribute("idx"));
+                this.delAlarmItem(e.target.parentNode.getAttribute("idx"));
         });
-        this.render();
-    }
-    
-    deleteListItem(idx)
-    {
-        this.alarms.splice(idx, 1);
-        localStorage.setItem("alarms", JSON.stringify(this.alarms));
+        this.timeTextIe = $target.querySelector("ul > li").childNodes[0].textContent;
+        this.delButtonText = $target.querySelector("ul > li > button").textContent;
         this.render();
     }
 
-    setState(isVisible)
+    hide()
     {
-        this.isVisible = isVisible;
-        this.render();
+        this.$target.classList.add("hide");
+    }
+
+    show()
+    {
+        this.hideHome();
+        this.$target.classList.remove("hide");
+    }
+
+    delAlarmItem(idx)
+    {
+        this.alarms.splice(idx, 1);
+        cache.set("alarms", this.alarms);
+        this.$target.querySelector(`ul > li[idx='${idx}']`).remove();
+    }
+
+    getTimeText(time)
+    {
+        const ampm = time < 720 ? "오전" : "오후";
+        let hour = Math.floor(time/60);
+        if (hour > 12) hour -= 12;
+        if (hour === 0) hour = 12;
+        return this.timeTextIe.replace("a", ampm).replace("HH", hour).replace("mm", time%60);
     }
     
     makeListItem(elem, idx)
     {
         const listItem = document.createElement("li");
-        listItem.classList.add("alarm-element");
         listItem.setAttribute("idx", idx);
-        const ampm = elem < 720 ? "오전" : "오후";
-        let hour = Math.floor(elem/60);
-        if (hour > 12) hour -= 12;
-        if (hour === 0) hour = 12;
-        listItem.textContent = `${ampm} ${hour}시 ${(elem%60)}분`;
+        listItem.textContent = this.getTimeText(elem);
     
-        const delete_button = document.createElement("button");
-        listItem.appendChild(delete_button);
-        delete_button.textContent = this.AppObj.textInfo["DeleteButton"];
-        delete_button.classList.add("button");
+        const delButton = document.createElement("button");
+        delButton.textContent = this.delButtonText;
+        listItem.appendChild(delButton);
                 
-        return listItem.outerHTML;
+        this.$target.querySelector("ul").prepend(listItem);
     }
     
     render()
     {
-        if (this.isVisible)
-        {
-            this.alarms = JSON.parse(localStorage.getItem("alarms"));
-            if (this.alarms !== null)
-                this.alarmList.innerHTML = this.alarms.map((elem, idx) => this.makeListItem(elem, idx)).join("");
-            this.target.classList.remove("hide");
-        }
-        else
-            this.target.classList.add("hide");            
+        this.$target.querySelector("ul > li").remove();
+        this.alarms.forEach((elem, idx) => {
+            this.makeListItem(elem, idx);
+        });
     }
 }
 
 class NewAlarm
 {
-    ampm = 0;
-    minute = 0;
-    hour = 0;
-    isVisible = false;
-    
-    constructor(Alarm)
+    constructor($target, makeListItem)
     {
-        this.Alarm = Alarm;
-        this.target = Alarm.newAlarmNode;
-        
-        this.target.querySelector("#new-minute").addEventListener("change", e=>this.minute = parseInt(e.target.value));
-        this.target.querySelector("#new-hour").addEventListener("change", e=>this.hour = parseInt(e.target.value));
-        this.target.querySelector("#new-ampm").addEventListener("change", e=>this.ampm = parseInt(e.target.value));
-        this.target.querySelector("button").textContent = Alarm.textInfo["SaveButton"];
-        this.target.querySelector("button").addEventListener("click", _=> this.addNewAlarm());
-        
-        this.render();
+        this.$target = $target;
+        this.makeListItem = makeListItem;
+        this.alarms = cache.get("alarms");
+        $target.querySelector("button").addEventListener("click", ()=> this.addNewAlarm());
     }
 
     addNewAlarm()
     {
-        let new_alarm_time = this.minute + this.hour * 60;
-        if (this.ampm === 1)
-            new_alarm_time += 720;
-        if (this.hour === 12)
-            new_alarm_time -= 720;
-    
-        const new_alarms = this.Alarm.alarms() === null? new Array() : this.Alarm.alarms();
-        new_alarms.unshift(new_alarm_time);
-        localStorage.setItem("alarms", JSON.stringify(new_alarms));
-        
-        this.Alarm.render();
-        this.setState(false);
+        const ampm = parseInt(this.$target.querySelector("select").value);
+        const hour = parseInt(this.$target.querySelectorAll("input")[0].value);
+        let newTime = hour*60 + parseInt(this.$target.querySelectorAll("input")[1].value);
+        if (ampm === 1)
+            newTime += 720;
+        if (hour === 12)
+            newTime -= 720;
+        let newAlarms = cache.get("alarms");
+        if (newAlarms == null) newAlarms = [];
+        newAlarms.push(newTime);
+        cache.set("alarms", newAlarms);
+        this.makeListItem(newTime, newAlarms.length-1);
+        this.toggle();
     }
     
-    setState(isVisible)
+    toggle()
     {
-        this.isVisible = isVisible;
-        this.render();
-    }    
-    
-    render()
-    {
-        if (this.isVisible)
-            this.target.classList.remove("hide");
-        else
-            this.target.classList.add("hide");            
-    }    
+        this.$target.classList.toggle("hide");
+    }
 }

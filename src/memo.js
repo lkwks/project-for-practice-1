@@ -1,54 +1,58 @@
+import cache from "./cache.js";
+
+
 export default class Memo
 {
-    isVisible = false;
-    
-    constructor(AppObj)
+    constructor($target, hideHome)
     {
-        this.target = AppObj.memoContentNode;
-        this.memoList = this.target.querySelector("ul");
+        this.$target = $target;
         this.now_clicked = null;
-        this.newMemo = new NewMemo({newMemoNode: this.target.querySelector("input"), textInfo: AppObj.textInfo, memos: _=>this.memos, render:_=>this.render()});
+        this.hideHome = hideHome;
+        this.newMemo = new NewMemo($target.querySelector("input"), (elem)=>this.makeListItem(elem));
         
-        this.memoList.addEventListener("click", event => 
+        this.memos = cache.get("memos");
+        if(this.memos == null) this.memos = [];
+        $target.querySelector("ul").addEventListener("click", event => 
         {
             if (event.target.nodeName === "LI")
-            {
-                if (this.now_clicked !== null)
-                    this.now_clicked.style.maxHeight = '2.6em';
-                event.target.style.maxHeight = 'none';
-                this.now_clicked = event.target;
-            }
+                this.clickListItem(event.target);
         });
 
         this.render();
     }
 
-
-    setState(isVisible)
+    clickListItem(target)
     {
-        this.isVisible = isVisible;
-        this.render();
+        if (this.now_clicked !== null)
+            this.now_clicked.classList.remove("clicked");
+        target.classList.add("clicked");
+        this.now_clicked = target;
     }
+
+    hide()
+    {
+        this.$target.classList.add("hide");
+    }
+
+    show()
+    {
+        this.hideHome();
+        this.$target.classList.remove("hide");
+    }
+
     
     render()
     {
-        if (this.isVisible)
-        {
-            this.memos = JSON.parse(localStorage.getItem("memos"));
-            if (this.memos !== null)
-                this.memoList.innerHTML = this.memos.map(elem => this.makeListItem(elem)).join("");
-            this.target.classList.remove("hide");
-        }
-        else
-            this.target.classList.add("hide");            
-    }    
+        this.memos.forEach(elem =>{
+            this.makeListItem(elem);
+        });
+    }
     
     makeListItem(elem)
     {
         const listItem = document.createElement("li");
         listItem.textContent = elem;
-        listItem.classList.add("memo-element");
-        return listItem.outerHTML;
+        this.$target.querySelector("ul").prepend(listItem);
     }
     
 }
@@ -56,39 +60,29 @@ export default class Memo
 
 class NewMemo 
 {
-    isVisible = false;
-    
-    constructor(Memo)
+    constructor($target, makeListItem)
     {
-        this.target = Memo.newMemoNode;
-        this.target.setAttribute("placeholder", Memo.textInfo["MemoPlaceholder"]);
-        this.target.addEventListener("keyup", event => 
+        this.$target = $target
+        this.makeListItem = makeListItem;
+        $target.addEventListener("keyup", event => 
         {
             if (event.key == "Enter")
-            {
-                const new_memos = Memo.memos() === null? new Array() : Memo.memos();
-                new_memos.unshift(this.target.value);
-                this.target.value = '';
-                localStorage.setItem("memos", JSON.stringify(new_memos));
-                Memo.render();
-                this.setState(false);
-            }
+                this.addNewMemo();
         });
-        
-        this.render();
     }
-    
-    setState(isVisible)
+
+    addNewMemo()
     {
-        this.isVisible = isVisible;
-        this.render();
+        let new_memos = cache.get("memos");
+        new_memos.push(this.$target.value);
+        cache.set("memos", new_memos);
+        this.makeListItem(this.$target.value);
+        this.$target.value = '';
+        this.toggle(false);
     }
-    
-    render()
+
+    toggle()
     {
-        if (this.isVisible)
-            this.target.classList.remove("hide");
-        else
-            this.target.classList.add("hide");            
-    }    
+        this.$target.classList.toggle("hide");
+    }
 }

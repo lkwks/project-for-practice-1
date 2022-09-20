@@ -1,121 +1,95 @@
+import cache from "./cache.js";
+
 export default class Home
-{
-    homeButtonBoxes = {};
-    appButtons = {};
-    
-    constructor(AppObj) 
+{    
+    constructor($target, alarmShow, memoShow, albumShow) 
     {
-        this.AppObj = AppObj;
-        this.homeContent = this.AppObj.homeContentNode;
-        
-        this.homeButtons = JSON.parse(localStorage.getItem("homeButtons"));
-    
+        this.$target = $target;
+        this.homeButtons = cache.get("homeButtons");
+        this.alarmShow = alarmShow;
+        this.memoShow = memoShow;
+        this.albumShow = albumShow;
         if (this.homeButtons === null)
-            fetch("pages.json")
-                .then(response => response.json())
-                .then(homeButtons => 
-                {
-                    localStorage.setItem("homeButtons", JSON.stringify(homeButtons));
-                    this.homeButtons = homeButtons;
-                });
-        
-        Object.keys(this.homeButtons).forEach((elem, idx) =>
         {
-            const bbox = new ButtonBox(idx);
-            const abtn = new AppButton(this.homeButtons, bbox.node, elem);
-            this.homeButtonBoxes[idx] = bbox;
-            this.appButtons[elem] = abtn;
-        });
-            
-        
-        this.homeContentWrapper = this.homeContent.querySelector(".home-content-wrapper");
-        this.homeContent.addEventListener("dragover", e=>
+            this.homeButtons = [];
+            this.$target.querySelectorAll(".home-content > div").forEach(elem => {
+                this.homeButtons.push(elem.querySelector("button").textContent);
+            });
+            cache.set("homeButtons", this.homeButtons);
+        }
+                
+        $target.addEventListener("dragover", e=>
         {
-            if (e.target.className === "app-button-box")
-                this.dragAction(e.target.id)
+            if (e.target.nodeName == "DIV" && e.target.parentNode.classList.contains("home-content"))
+            {
+                if (this.lastDraggedBox != e.target)
+                    this.dragAction(e.target);
+                this.lastDraggedBox = e.target;
+            }
         });
 
-        this.homeContent.addEventListener("dragstart", event=>
+        $target.addEventListener("dragstart", e=>
         {
-            if (event.target.nodeName == "BUTTON")
+            if (e.target.nodeName == "BUTTON")
             {
-                this.now_dragging = event.target.id.replace("button_", ""); event.target.style.opacity=0.01;
+                this.nowDragging = e.target;
+                e.target.classList.add("transparent");
             }
         });
         
-        this.homeContent.addEventListener("dragend", event=>
+        $target.addEventListener("dragend", e=>
         {
-            if (event.target.nodeName == "BUTTON")
-                event.target.style.opacity=1;
+            if (e.target.nodeName == "BUTTON")
+                e.target.classList.remove("transparent");
         });
         
-        this.homeContent.addEventListener("click", event=>
+        $target.addEventListener("click", e=>
         {
-            if (event.target.id === "button_alarm")
-                this.AppObj.setState(this.AppObj.alarmContent()); 
-            if (event.target.id === "button_memo")
-                this.AppObj.setState(this.AppObj.memoContent()); 
-            if (event.target.id === "button_album")
-                this.AppObj.setState(this.AppObj.albumContent()); 
+            if (e.target.textContent == "알람") this.alarmShow();
+            if (e.target.textContent == "메모") this.memoShow();
+            if (e.target.textContent == "사진") this.albumShow();
         });
+
+        this.homeButtonNodes = {};
         this.render();
     }
-    
-    setState(isVisible)
+
+    hide()
     {
-        this.isVisible = isVisible;
-        this.render();
+        this.$target.classList.add("hide");
     }
-    
+
+    show()
+    {
+        this.$target.classList.remove("hide");
+    }
+
+
     render()
     {
-        if (this.isVisible)
-        {
-            this.homeContentWrapper.innerHTML = Object.keys(this.homeButtons).map((_, idx) => this.homeButtonBoxes[idx].node.outerHTML).join("");
-            this.homeContent.classList.remove("hide");
-        }
-        else
-            this.homeContent.classList.add("hide");            
-    }    
+        this.$target.querySelectorAll("button").forEach((elem, idx) => {
+            elem.textContent = this.homeButtons[idx];
+            this.homeButtonNodes[elem.textContent] = elem;
+        });        
+    }
     
-    dragAction(now_box)
+    dragAction(destBox)
     {
-        const new_button_list = new Object();
-        const now_order = Object.keys(this.homeButtons);
-        for (let i=0, j=0; i<now_order.length; i++)
-            if ("box"+i === now_box)
-                new_button_list[this.now_dragging] = this.homeButtons[this.now_dragging];
+        const newList = [];
+        this.$target.querySelectorAll("div").forEach( elem =>
+        {
+            if (elem == destBox)
+                newList.push(this.nowDragging.textContent);
             else
             {
-                if (now_order[j] == this.now_dragging) j++;
-                new_button_list[now_order[j]] = this.homeButtons[now_order[j++]];
+                let nowButton = this.homeButtons.shift();
+                if (nowButton == this.nowDragging.textContent)
+                    nowButton = this.homeButtons.shift();
+                newList.push(nowButton);
             }
-        localStorage.setItem("homeButtons", JSON.stringify(new_button_list));
-        this.homeButtons = new_button_list;
-        Object.keys(new_button_list).forEach((elem, idx) => this.homeContent.querySelector("#box"+idx).appendChild(this.homeContent.querySelector("#button_"+elem)));
-    }
-    
-}
-
-class ButtonBox 
-{
-    constructor(idx)
-    {
-        this.node = document.createElement("div");
-        this.node.classList.add("app-button-box");
-        this.node.setAttribute("id", "box"+idx);
-    }
-}
-
-class AppButton
-{
-    constructor(homeButtons, parentBox, elem)
-    {
-        this.node = document.createElement("button");
-        this.node.setAttribute("id", "button_"+elem);
-        this.node.setAttribute("draggable", "true");
-        this.node.classList.add("app-button");
-        this.node.textContent = homeButtons[elem];
-        parentBox.appendChild(this.node);
-    }
+            elem.appendChild(this.homeButtonNodes[newList[newList.length-1]]);
+        });
+        cache.set("homeButtons", newList);
+        this.homeButtons = newList;
+    }    
 }
