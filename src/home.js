@@ -2,17 +2,20 @@ import cache from "./cache.js";
 
 export default class Home
 {    
-    constructor($target, alarmShow, memoShow, albumShow) 
+    constructor($target, reactFunc) 
     {
         this.$target = $target;
         this.homeButtons = cache.get("homeButtons");
-        this.alarmShow = alarmShow;
-        this.memoShow = memoShow;
-        this.albumShow = albumShow;
+        
+        this.mappedFunc = {};
+        $target.querySelectorAll("button").forEach((elem, idx) => {
+            this.mappedFunc[elem.textContent] = reactFunc[idx];
+        });
+        
         if (this.homeButtons === null)
         {
             this.homeButtons = [];
-            this.$target.querySelectorAll(".home-content > div").forEach(elem => {
+            this.$target.querySelectorAll("div").forEach(elem => {
                 this.homeButtons.push(elem.querySelector("button").textContent);
             });
             cache.set("homeButtons", this.homeButtons);
@@ -45,9 +48,7 @@ export default class Home
         
         $target.addEventListener("click", e=>
         {
-            if (e.target.textContent == "알람") this.alarmShow();
-            if (e.target.textContent == "메모") this.memoShow();
-            if (e.target.textContent == "사진") this.albumShow();
+            if (e.target.nodeName == "BUTTON") this.mappedFunc[e.target.textContent];
         });
 
         this.homeButtonNodes = {};
