@@ -11,6 +11,7 @@ class Clock
     {
         this.$target = $target;        
         this.delAlarmItem = delAlarmItem;
+        this.timeTextIe = $target.textContent;
         this.runClock();
     }
 
@@ -19,7 +20,7 @@ class Clock
         const time = new Date();
         const year = time.getFullYear(), month = time.getMonth() + 1, day = time.getDate();
         const hour = time.getHours(), minute = time.getMinutes(), second = time.getSeconds();
-        this.$target.textContent = `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분 ${second}초`;
+        this.$target.textContent = this.timeTextIe.replace("YYYY", year).replace("MM", month).replace("DD", day).replace("HH", hour).replace("mm", minute).replace("ss", second);
         
         const alarms = cache.get("alarms");
         if (alarms !== null)
