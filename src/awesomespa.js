@@ -45,7 +45,7 @@ class App
         this.albumContent = new Album($target.querySelector(".album-content"), ()=>this.hideHome());
         this.memoContent = new Memo($target.querySelector(".memo-content"), ()=>{this.hideHome();this.newMemoButton.show();});
         this.alarmContent = new Alarm($target.querySelector(".alarm-content"), ()=>{this.hideHome();this.newAlarmButton.show();});
-        this.homeContent = new Home($target.querySelector(".home-content"), ()=>this.alarmContent.show(), ()=>this.memoContent.show(), ()=>this.albumContent.show());
+        this.homeContent = new Home($target.querySelector(".home-content"), [()=>this.alarmContent.show(), ()=>this.memoContent.show(), ()=>this.albumContent.show()]);
 
         this.backButton = new Button($target.querySelector(".status-bar > div:nth-child(1) > button"), ()=>this.showHome());
         this.clock = new Clock($target.querySelector(".status-bar > div:nth-child(2) > span"), (elem)=>this.alarmContent.delAlarmItem(elem));
